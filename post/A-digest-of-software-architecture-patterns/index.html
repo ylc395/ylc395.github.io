@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<link rel="stylesheet" href="https://cyl.moe/styles/main.css">
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <title>Digest of Software Architecture Patterns - 现代性魔法</title>
+</head>
+</head>
+<body>
+    <div class="main">
+        <nav class="navigation">
+            <a href="/">cyl.moe</a>
+        </nav>
+        <article>
+            <header>
+                <h1 class="article-title">Digest of Software Architecture Patterns</h1>
+                <div class="article-info">
+                    <span>创建于：<time datetime="2018-10-28 13:06">2018-10-28 13:06</time></span>
+                </div>
+            </header>
+            <div class="article-content markdown-body">
+                <p>Architecture patterns help define the basic characteristics and behavior of an application. Different architecture patterns make different senses. To make the correct decision, developers should know about the characteristics, strengths, and weaknesses of each architecture pattern.</p>
+<h1 id="layered-architecture">Layered Architecture</h1>
+<h2 id="description">Description</h2>
+<p>Layered architecture is the de facto standard for most Java EE applications and therefore is widely known by most developers, and has become a natural choice for most business application development.</p>
+<p>Components within the layered architecture pattern are organized into horizontal layers, each layer performing a specific role within the application. For example, we can divide all source code into four <strong>layers</strong>:</p>
+<ul>
+<li>presentation layer</li>
+<li>business layer</li>
+<li>persistence layer</li>
+<li>database layer</li>
+</ul>
+<p>More or less layers are acceptable, depending on the scale of your application. In fact there are various layering theories, but they share the same principles.</p>
+<p>Furthermore, codes in each layer can be divided into different <strong>components</strong>. Components in each layer should have a <strong>separated concern</strong>（分离的关注点）. For example, codes in components of presentation layer must not handle with database operation (such as using SQL statement).</p>
+<p>The feature of separation of concerns among components brings into <strong>layers of isolation</strong>, which means high changeability or even replaceability of each layers, for they are independent of the other layers. And we call these layers <strong>closed</strong> because every layer prevent its upper layer from knowing anything about its lower layers.</p>
+<p>For some reasons, sometimes it makes sense to <strong>make a layer open</strong>. Opening a layer means that make a layer &quot;translucent&quot;, otherwise a upper layer of the open layer may have knowledge of the lower layer of the open layer. Usually an open layer is a <strong>service layer</strong>, which provide some common supprots for its upper layer. It's necessary to document which layers are open and why.<br>
+<img src="https://image-1257651452.cos.ap-chengdu.myqcloud.com/20181024204849.png" alt="" loading="lazy"></p>
+<h2 id="considerations">Considerations</h2>
+<p>Here are two things to consider when using layered architecture:</p>
+<ul>
+<li>sinkhole anti-pattern: This anti-pattern describes the situation where a call request flows through multiple layers of the architecture as simple pass-through processing with little or no logic performed within each layer. When too much call requests are perceived to fall into this anti-pattern, opening some layers is a nice solution</li>
+<li>A application of layered architecture pattern tends to lend itself toward monolithic applications</li>
+</ul>
+<h2 id="rating">Rating</h2>
+<ul>
+<li>Overall agility: low. Because of the monolithic nature of most implementations as well as the tight coupling of components usually found with this pattern</li>
+<li>Ease of deployment: low. This pattern is not designed specially for a continuous delivery pipeline</li>
+<li>Testability: high. Any layer can be mocked in a testing</li>
+<li>Performance: low. This pattern is not designed specially for high-performance</li>
+<li>Scalability: low. For its trend toward tightly coupled and monolithic implementations</li>
+<li>Ease of development: High. For it's a general-purpose  and well-known pattern. And according to Conway's law, layered architecture correspond with the typical business company</li>
+</ul>
+<h1 id="event-driven-architecture">Event-Driven Architecture</h1>
+<p>The event-driven architecture is made up of highly decoupled, single-purpose event processing components that asynchronously receive and process events. This architecture consists of two main topologies: mediator topology and broker topology. Characteristics and implementation strategies differ between these two topologies.</p>
+<h2 id="description-2">Description</h2>
+<p>A system of event-driven architecture takes every input as a <strong>event</strong>, and it'll be dispatched to a certain component somehow to be processed.</p>
+<h3 id="mediator-topology">Mediator topology</h3>
+<p>If you're dealing with events that have multiple steps and require some level of orchestration to process the event, here is mediator topology.</p>
+<p>There are four parts in this type of architecture:</p>
+<ul>
+<li>event queues</li>
+<li>an event mediator</li>
+<li>event channels</li>
+<li>event processors</li>
+</ul>
+<p>And this is how they work:</p>
+<ol>
+<li>Client send a request called <strong>initial event</strong> to an event queue</li>
+<li>The event mediator, which only knows of the steps required to process initial event, receives the initial event and generate additional asynchronous events called <strong>processing events</strong> for event channels</li>
+<li>Event processors which listen on the event channels receive events from event mediator and execute specific business logic to process the event. Each processor can complete its tasks without relying on other processors.<br>
+<img src="https://image-1257651452.cos.ap-chengdu.myqcloud.com/20181025221809.png" alt="" loading="lazy"></li>
+</ol>
+<h3 id="broker-topology">Broker topology</h3>
+<p>If your event processing logic is simple enough so that you don't want or need a central event mediator to perform orchestration, you can choose this broker topology.</p>
+<p>There are two parts in this type of architecture:</p>
+<ul>
+<li>A broker, which contains some event channels</li>
+<li>Event processors</li>
+</ul>
+<p>And this is how they work:</p>
+<ol>
+<li>An initial event created by a client will be dispatched to a event channel of the broker</li>
+<li>Each event processor is responsible for processing an event which it concerns, and may publish a new event for other processors to a event channel hold by the broker after it complete its task</li>
+</ol>
+<figure data-type="image" tabindex="1"><img src="https://image-1257651452.cos.ap-chengdu.myqcloud.com/20181025221910.png" alt="" loading="lazy"></figure>
+<h2 id="considerations-2">Considerations</h2>
+<ul>
+<li>Make sure to make a good design of granularity of event processors. Remember that an undivided transaction must not be processed by separate processors</li>
+<li>Use a  standard data format (like JSON ) in the communication among event processors, and establish a contract versioning policy right from the start</li>
+</ul>
+<h2 id="rating-2">Rating</h2>
+<ul>
+<li>Overall agility: high.  Event-processor components are single-purpose and completely decoupled from other event processors</li>
+<li>Ease of deployment: high. For its decoupled nature</li>
+<li>Testability: low. Though individual unit testing is not overly difficult, it does require some sort of specialized testing client or testing tool to generate events. Testing is also complicated by the asynchronous nature of this pattern</li>
+<li>Performance: high.  Parallel asynchronous operations rules!</li>
+<li>Scalability: high. For its decoupled nature</li>
+<li>Ease of development: low.  For its asynchronous nature</li>
+</ul>
+<h1 id="microkernel-architecture">Microkernel Architecture</h1>
+<p>Softwares based on microkernel architecture are easy to append additional features as plugins.</p>
+<h2 id="description-3">Description</h2>
+<p>This architecture consists of two types of components:</p>
+<ul>
+<li>a <strong>core system</strong> : contains only the minimal functionlity required to make the system operational</li>
+<li><strong>plug-in modules</strong>: stand-alone, independent components that contain specialized processing, additional features, and custom code. Each module is independent of any ohter module generally, so it's important to design a common way of communication among plug-ins and with core system</li>
+</ul>
+<figure data-type="image" tabindex="2"><img src="https://image-1257651452.cos.ap-chengdu.myqcloud.com/20181027165039.png" alt="" loading="lazy"></figure>
+<h2 id="considerations-3">Considerations</h2>
+<p>This architecture can be embedded or used as part of another architecture. And it's the first choice when developing a software which will be adjusted frequently to respond to users' requirement.</p>
+<h2 id="rating-3">Rating</h2>
+<ul>
+<li>Overall agility: high.  Plugin-in modules can be developed quickly and separately</li>
+<li>Ease of deployment: high, if plug-ins modules can be loaded dynamically</li>
+<li>Testability: high. Plug-in modules can be tested in isolation and can be easily mocked by the core system to demonstrate or prototype a particular feature with little or no change to the core system</li>
+<li>Performance: high, when discard plug-in modules that you don't really need</li>
+<li>Scalability: low. Scalability are provied in plug-ins' level rather than core system level</li>
+<li>Ease of development: low.  The microkernel architecture requires thoughtful design and contract governance, making it rather complex to implement</li>
+</ul>
+<h1 id="microservices-architecture">Microservices Architecture</h1>
+<p>Microservices architecture gains its big siginifiance in software industry. Theories about this architecture are still evolving, but basically it's a  viable alternative to monolithic applications and service-oriented architectures.</p>
+<h2 id="description-4">Description</h2>
+<p>There are several common core concepts that apply to the general architecture pattern.</p>
+<ul>
+<li><strong>service component</strong>: Service components contain one or more modules that represent either a single-purpose function  or an independent portion of a large business application. Designing the right level of service component granularity is one of the biggest challenges within a microservices architecture</li>
+<li><strong>separately deployed units</strong>: Every service component can be deployed as separate unit</li>
+<li><strong>distributed</strong>: All the components within the architecture are fully decoupled from one other and accessed through some sort of remote access protocol (like REST)</li>
+</ul>
+<p>There are two main sources of motivation to this architecture: one is the challenge of the continuous delivery for  monolithic applications, another is the practice of service-oriented architecture pattern (SOA, an architecture for huge scale applications).</p>
+<h3 id="api-rest-based-topology">API REST-based topology</h3>
+<p>The API REST-based topology is useful for websites that expose small, self-contained individual services through some sort of API.  In this topology, these fine-grained service components are typically accessed using a REST-based interface implemented through a separately deployed web-based API layer.</p>
+<figure data-type="image" tabindex="3"><img src="https://image-1257651452.cos.ap-chengdu.myqcloud.com/20181027211251.png" alt="" loading="lazy"></figure>
+<p>###Application REST-based topology</p>
+<p>The application REST-based topology differs from the API RESTbased approach in that client requests are received through traditional web-based or fat-client business application screens rather than through a simple API layer.</p>
+<p>The service components in this topology differ from those in the API-REST-based topology in that these service components tend to be larger, more coarse-grained, and represent a small portion of the overall business application rather than fine-grained, singleaction services. This topology is common for small to medium-sized business applications that have a relatively low degree of complexity.</p>
+<figure data-type="image" tabindex="4"><img src="https://image-1257651452.cos.ap-chengdu.myqcloud.com/20181027211647.png" alt="" loading="lazy"></figure>
+<h3 id="centralized-messaging-topology">Centralized messaging topology</h3>
+<p>The centralized messaging topology is typically found in larger business applications or applications requiring more sophisticated control over the transport layer between the user interface and the service components. The benefits of this topology over the simple REST-based topology discussed previously are advanced queuing mechanisms, asynchronous messaging, monitoring, error handling, and better overall load balancing and scalability.</p>
+<p>The single point of failure and architectural bottleneck issues usually associated with a centralized broker are addressed through broker clustering and broker federation (splitting a single broker instance into multiple broker instances to divide the message throughput load based on functional areas of the system).</p>
+<figure data-type="image" tabindex="5"><img src="https://image-1257651452.cos.ap-chengdu.myqcloud.com/20181228023859.png" alt="" loading="lazy"></figure>
+<h2 id="considerations-4">Considerations</h2>
+<ul>
+<li>Think carefully before determining the correct level of granularity for the service components. Too fine-grained will lead to service orchestration requirements while too coarse-grained makes it no more &quot;microservice&quot;</li>
+<li>Use shared databases sometimes to reduce the couplings between components</li>
+<li>Functionality reusing may be a problem. Sometimes you have to reuse by copy codes</li>
+</ul>
+<h2 id="rating-4">Rating</h2>
+<ul>
+<li>Overall agility: high.  Born for it</li>
+<li>Ease of deployment: high. Born for it</li>
+<li>Testability: high, due to the separation and isolation of business functionality</li>
+<li>Performance: low, due to the distributed nature of the microservices architecture pattern</li>
+<li>Scalability: high.</li>
+<li>Ease of development: high</li>
+</ul>
+<h1 id="space-based-architecture">Space-Based Architecture</h1>
+<p>The space-based pattern (also sometimes referred to as the cloud architecture pattern) minimizes the factors that limit application scaling. Most applications that fit into this pattern are standard websites that receive a request from a browser and perform some sort of action.</p>
+<h2 id="description-5">Description</h2>
+<p>There are two primary components within this architecture pattern:</p>
+<ul>
+<li>a processing unit: Typically contains the application modules (as well as backend logic), along with an in-memory data grid and an optional asynchronous persistent store for failover. Also contains a replication engine that is used by the virtualized middleware to replicate data changes made by one processing unit to other active processing units</li>
+<li>virtualized middleware: Handles housekeeping and communications. It contains components that control various aspects of data synchronization and request handling. Included in the virtualized middleware are the messaging grid, data grid, processing grid, and deployment manager. The virtualized middleware is essentially the controller for the architecture</li>
+</ul>
+<figure data-type="image" tabindex="6"><img src="https://image-1257651452.cos.ap-chengdu.myqcloud.com/20181028042751.png" alt="" loading="lazy"></figure>
+<p>There are four main architecture components in the virtualized middleware. We'll talk below.</p>
+<h3 id="messaging-grid">Messaging Grid</h3>
+<p>When a request comes into the virtualizedmiddleware component, the messaging-grid component determines which active processing components are available to receive the request and forwards the request to one of those processing units.</p>
+<h3 id="data-grid">Data Grid</h3>
+<p>The data grid interacts with the datareplication engine in each processing unit to manage the data replication between processing units when data updates occur. Since the messaging grid can forward a request to any of the processing units available, it is essential that each processing unit contains exactly the same data in its in-memory data grid.</p>
+<h3 id="processing-grid">Processing Grid</h3>
+<p>An optional component within the virtualized middleware that manages distributed request processing when there are multiple processing units, each handling a portion of the application.</p>
+<h3 id="deployment-manager">Deployment Manager</h3>
+<p>This component continually monitors response times and user loads, and starts up new processing units when load increases, and shuts down processing units when the load decreases.</p>
+<h2 id="considerations-5">Considerations</h2>
+<p>Although the space-based architecture pattern does not require a centralized datastore, one is commonly included to perform the initial in-memory data grid load and asynchronously persist data updates made by the processing units. It is also a common practice to create separate partitions that isolate volatile and widely used transactional data from non-active data, in order to reduce the memory footprint of the in-memory data grid within each processing unit.</p>
+<h2 id="rating-5">Rating</h2>
+<ul>
+<li>Overall agility: high.  Born for it</li>
+<li>Ease of deployment: high. Born for it</li>
+<li>Testability: low, especially in the scalability aspects of the application</li>
+<li>Performance: high. Born for it</li>
+<li>Scalability: high. Born for it</li>
+<li>Ease of development: low. Sophisticated caching and in-memory data grid products make this pattern relatively complex to develop</li>
+</ul>
+
+            </div>
+        </article>
+    </div>
+</body>
+</html>

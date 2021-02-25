@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<link rel="stylesheet" href="https://cyl.moe/styles/main.css">
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <title>《Learn Prolog Now》读书笔记 - 现代性魔法</title>
+</head>
+</head>
+<body>
+    <div class="main">
+        <nav class="navigation">
+            <a href="/">cyl.moe</a>
+        </nav>
+        <article>
+            <header>
+                <h1 class="article-title">《Learn Prolog Now》读书笔记</h1>
+                <div class="article-info">
+                    <span>创建于：<time datetime="2019-03-23 14:56">2019-03-23 14:56</time></span>
+                </div>
+            </header>
+            <div class="article-content markdown-body">
+                <h1 id="基本组成部分">基本组成部分</h1>
+<p>使用一个 Prolog 的实现，读取/编译一个由 facts 和 rules 组成的 knowledge bases 后，向它发送 query 启动一次 称为 proof search 的 查询过程。 在这一查询过程中，Prolog 的实现将通过一种匹配（Uniﬁcation）机制，尽力将 query “匹配”（术语称 match 或 unify）到某个 fact 上 （这个 fact 可能是由 rules 推导得出的，而不是直接由程序员写在 knowledge base 里的）。匹配过程在 整个查询过程中一般会 发生多次。Prolog 编程指的就是编写 knowledge bases。</p>
+<p>Knowledge base 完全由 clauses 组成， clauses 必由<code>.</code>结尾。每一条 clause 要么是 fact，要么是 rule。</p>
+<ul>
+<li>rule：每一条 rule 使用 <code>:-</code>隔开“后件”与“前件”，其左边的部分称为<em>head of rule</em>，右边部分称为<em>body</em>. 换句话说，<code>:-</code> 应当读作&quot;if&quot;，而<code>head :- body</code>读作“if the body of the rule is true, then the head of the rule is true”。其中，body 部分至少由一个 goal 组成，多个 goals 之间可用<code>,</code>隔开。<code>,</code>读作&quot;and&quot;。若想用不同的后件推导出同一个前件，即使用&quot;or&quot;连接多个前件，则应当在 body 处使用<code>;</code>连接多个前件。但可读性更高的方法是另起个新的 rule（仍然使用同样的后件，但前件不同）</li>
+<li>fact：每一条 fact 不过是一条 degenerate rule，即一个无前件的 rule</li>
+</ul>
+<h1 id="基本语法">基本语法</h1>
+<p>任何一个 fact、rule 和 query 均由一个 term 直接构成，且这个 term 要能组成一个 predicate（或称 procedure）。</p>
+<p>有四种 term：</p>
+<ul>
+<li>atom：形式上以小写字母开头（如<code>a</code>、<code>cyl</code>、<code>a_b</code>），或是被单引号包裹（如<code>'d b'</code>），或是由一些特殊字符组成（如<code>+</code>、<code>:-</code>等。这种 atom 通常具有<strong>语义</strong>）</li>
+<li>number：形如<code>23</code>, <code>1001</code>, <code>0</code>, <code>-365</code></li>
+<li>varaible：形式上由大写字母开头，唯一例外是<code>_</code>（匿名变量）。此类 term 有一种被  instantiate 的潜力——即被另一个 term 替代的潜力（作用见下文）。形式上相同的多个 varaible ，在每一个匹配过程中必被 instantiate 到同一个 term 上（匿名变量<code>_</code>是例外，多个<code>_</code>可以不被 instantiate 到同一个 term 上）</li>
+<li>complex term：在形式上，由一个被称为 functor 的 atom 打头，后跟一个参数序列（由<code>()</code>包围，各参数使用<code>,</code>分割。其长度被称为  arity）。参数序列中的一个参数可以是任何一种 term。如果把 functor 定义为一个 operator，则该 functor 和作为其参数的 atom 可以以一种自定义的方式（前缀、中缀、后缀）排列（见9.4节，本文略）</li>
+</ul>
+<p>要组成一个 predicate，必须使用一个 atom 或一个 complex term。</p>
+<h1 id="匹配unification一种形式上的满足">匹配（Uniﬁcation）：一种形式上的满足</h1>
+<h2 id="匹配的定义">“匹配”的定义</h2>
+<p>据前述，查询过程实质上是多次尝试让一个 query 匹配到某个 fact 的一个过程。一个 query 和一个 fact 均由一个 term 直接构成，因此 query 和 fact 的“匹配”问题归根结底是两个 term 的匹配问题。定义两个 term 匹配规则如下：</p>
+<ol>
+<li>If term1 and term2 are constants（atom 或 number 都是一种 constant）, then term1 and term2 match if and only if they are the same atom, or the same number.（值得一提的是<code>'aa'</code>和<code>aa</code>会被视为匹配的）</li>
+<li>If term1 is a variable and term2 is any type of term, then term1 and term2 match, and term1 is <strong>instantiated</strong> to term2. Similarly, if term2 is a variable and term1 is any type of term, then term1 and term2 match, and term2 is instantiated to term1. (So if they are both variables, they’re both instantiated to a same new varibale, and we say that they share values.)</li>
+<li>If term1 and term2 are complex terms, then they match if and only if:
+<ol>
+<li>They have the same functor and arity.</li>
+<li>All their corresponding arguments match</li>
+<li>and the variable instantiations are compatible. (I.e. it is not possible to instantiate variable X to mia, when matching one pair of arguments, and to then instantiate X to vincent, when matching another pair of arguments.)</li>
+</ol>
+</li>
+<li>Two terms match if and only if it follows from the previous three clauses that they match.</li>
+</ol>
+<h2 id="proof-search构建搜索树">proof search——构建搜索树</h2>
+<p>knowledge base</p>
+<pre><code class="language-prolog">f(a).
+
+f(b).
+g(a).
+g(b).
+h(b).
+k(X) :- f(X),g(X),h(X).
+</code></pre>
+<p>对查询<code>k(X).</code>有如下搜索树：</p>
+<figure data-type="image" tabindex="1"><img src="https://image-1257651452.cos.ap-chengdu.myqcloud.com/20190323021602.png" alt="" loading="lazy"></figure>
+<blockquote>
+<p>whenever it has a list of goals, Prolog tries to satisfy them one by one, working through the list in a left to right direction</p>
+</blockquote>
+<blockquote>
+<p>Points in the search where there are several alternatives for matching a goal against the knowledge base are called <strong>choice points</strong>. Prolog keeps track of choice points and the choices that it has made there, so that if it makes a wrong choice, it can go back to the choice point and try something else. This is called <strong>backtracking</strong></p>
+</blockquote>
+<blockquote>
+<p>The nodes of the tree say which are the goals that have to be satisﬁed at a certain point during the search and at the edges we keep track of the variable instantiations that are made when the current goal (i.e. the ﬁrst one in the list of goals) is match to a fact or the head of a rule in the knowledge base. Such trees are called <strong>search trees</strong> and they are a nice way of visualizing the steps that are taken in searching for a proof of some query. Leave nodes which still contain unsatisﬁed goals are point where Prolog failed, because it made a wrong decision somewhere along the path. Leave nodes with an empty goal list, correspond to a possible solution. The information on the edges along the path from the root node to that leave tell you what are the variable instantiations with which the query is satisﬁed</p>
+</blockquote>
+<h2 id="匹配算法unification-algorithms">匹配算法（unification algorithms）</h2>
+<p>在深度优先搜索 search tree 的过程中，Prolog 使用一种 optimistic uniﬁcation algorithm 来为一个节点匹配。即不进行 occurs check（一种花费额外开销 peek inside the structure of the terms they are asked to unify，来在实施匹配之前判断能否匹配的机制） 。这可能导致匹配过程无法终止。</p>
+<h2 id="附录unification-vs-pattern-match">附录：unification vs. pattern match</h2>
+<table>
+<thead>
+<tr>
+<th>pattern matching</th>
+<th>unification</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Matches a syntactic pattern to a data object.</td>
+<td>Matches a data object to a data object.</td>
+</tr>
+<tr>
+<td>mutable variables or single-assignment variables</td>
+<td>logical variables</td>
+</tr>
+<tr>
+<td>one-sided: Only assigns to variables on the left.</td>
+<td>two-sided: Assigns in both directions.</td>
+</tr>
+<tr>
+<td>No constraints are created.</td>
+<td>Can create equality constraints.</td>
+</tr>
+<tr>
+<td>lexically restricted: Only assigns to variables that occur syntactically in the statement.</td>
+<td>lexically unrestricted: Assigns to variables that do not occur syntactically in the statement.</td>
+</tr>
+<tr>
+<td>sequential--Assignments must occur in the presented order.</td>
+<td>non-sequential--Assignments can be done in any order.</td>
+</tr>
+<tr>
+<td>non-idempotent--Assignments cannot generally be repeated.</td>
+<td>idempotent--Assignments can be repeated without changing the effect.</td>
+</tr>
+<tr>
+<td>A single pattern can match different terms with different structures.</td>
+<td>A term can only match another term with the same structure.</td>
+</tr>
+</tbody>
+</table>
+<p>来源：<a href="http://www.unobtainabol.com/2016/04/unification-things-pattern-matching.html">http://www.unobtainabol.com/2016/04/unification-things-pattern-matching.html</a></p>
+<h1 id="形式之外语义">形式之外：语义</h1>
+<p>Prolog 预定义了一些具有“意义”的、   用于充当 functor 的 term。“有意义”的 term 指的是， Prolog 的实现<strong>并不（只）拿该 term 用于对某个 fact 的形式上的匹配，而是另有他用（也就是具有一定语义）</strong>。这一“他用”发生在一个 sandbox 中，程序员需要了解该处理将导致的效果（也就是其语义）来加以利用。</p>
+<p>使用这些 term  充当 functor  的 complex term 不能充当 fact。因为 fact 不应该有语义。运行时只有 queries 和 rules 能携带并发挥语义。</p>
+<h2 id="与"><code>=</code>与<code>==</code></h2>
+<p><code>=/2</code>在语义上，判断两个参数是否匹配。这一判断过程若涉及变量，则会对变量进行 instantiate 操作。反义词<code>\=/2</code>；<code>==/2</code>类似，但若涉及变量，并不进行 instantiate 操作。反义词<code>\==/2</code></p>
+<h2 id="与列表"><code>.</code>与列表</h2>
+<p>Prolog 预定义了<code>[]</code>和<code>./2</code>这两个 term，它们合称 list constructors。<code>./2</code>的语义是“有序地排列两个参数组成一个 non-empty list，其中第二个参数必须是一个[]或一个 non-empty list”。</p>
+<p>Prolog 提供了一种语法糖，使得程序员可以避免使用<code>./2</code>来构建 non-empty list。例如<code>.(.(a,[]),.(.(b,.(c,[])),[]))</code>可简写为<code>[[a],[b,c]]</code>。</p>
+<p>对任意 non-empty list，可以在试图用一 non-empty list 匹配它时，使用<code>|</code>分割后者，使得后者能在一次匹配尝试中分别独立地匹配前者的两个部分（head 与 tail）。</p>
+<p>non-empty list 是一种递归定义的结构（实际上是一棵二叉树），因此通常也使用具有递归形式的 rule 来处理它（该 rule 以 reduce 的方式进行处理是很常见且高效的）。利用<code>|</code>，可以通过具有递归形式的 rule 来递归匹配一个 non-empty lisy。</p>
+<h2 id="is与算术"><code>is</code>与算术</h2>
+<p><code>is/2</code>在语义上判断两个参数是否匹配。 这一判断过程要求第二个参数是由 <code>+/2</code>,<code>*/2</code>,<code>-/2</code>, <code>mod/2</code>充当 functor 的 complex term，该 complex term 将被转换为一个 number 用于匹配。</p>
+<p>类似地，<code>&gt;/2</code>、<code>&gt;=/2</code>、<code>&lt;/2</code>、<code>&lt;=/2</code>、<code>=:=/2</code>、<code>=\=/2</code>在语义上判断第一个参数是否大/大等/小/小等/等/不等于第二个参数。两个参数均会被转换为一个 number 以进行匹配。</p>
+<h2 id="examining-terms">Examining Terms</h2>
+<h3 id="types-of-terms">Types of Terms</h3>
+<p>Prolog provides a couple of built-in predicates that test whether a given term is of a certain type.</p>
+<ul>
+<li>atom/1 Tests whether the argument is an atom.</li>
+<li>integer/1 Tests whether the argument is an integer, such as 4, 10, or-6.</li>
+<li>float/1 Tests whether the argument is a ﬂoating point number, such as 1.3 or 5.0.</li>
+<li>number/1 Tests whether the argument is a number, i.e. an integer or a ﬂoat</li>
+<li>atomic/1 Tests whether the argument is a constant.</li>
+<li>var/1 Tests whether the argument is uninstantiated.</li>
+<li>nonvar/1 Tests whether the argument is instantiated.</li>
+</ul>
+<h3 id="the-structure-of-terms">The Structure of Terms</h3>
+<ul>
+<li>functor/3 will tell us what the functor and the arity of this term are</li>
+<li>arg/3  tells us about arguments of complex terms. It takes a number N and a complex term T and returns the Nth argument of T in its third argument. It can be used to access the value of an argument</li>
+<li>’=..’/2 takes a complex term and returns a list that contains the functor as ﬁrst element and then all the arguments</li>
+</ul>
+<h3 id="干涉-proof-search-过程">干涉 proof search 过程</h3>
+<p>程序员可以使用以下 term 来干涉 proof search 过程。</p>
+<ul>
+<li>!/0：读作 cut。将其置于任何一个 goal 之后。这将阻止它左边的 goal 被 backtrace。这可能会影响程序的语义</li>
+<li>fail/0：用于充当一个 goal，且对该 goal 的匹配将立刻失败。这将导致一个 backtrace。cut 常常与 fail 连用（作为两个连续的goal）组成一个 cut-fail combination，用于“辅助推导出某个后件”的例外前件（if...<strong>except for</strong>...then 中的 except for 部分）</li>
+<li>+/1：Negation as failure. 相当于 cut-fail combination</li>
+</ul>
+<h1 id="在查询时操作-knowledge-base">在查询时操作 knowledge base</h1>
+<p>见第11章。本文略</p>
+
+            </div>
+        </article>
+    </div>
+</body>
+</html>
