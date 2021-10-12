@@ -1,28 +1,44 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
-<head>
-    <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
-<link rel="stylesheet" href="https://cyl.moe/styles/main.css">
-<link rel="icon" href="/favicon.ico" type="image/x-icon">
-    <title>数据的流观点 - 现代性魔法</title>
-</head>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<link rel="stylesheet" href="/_assets/main.css" />
+
+    <title>数据的流观点 - cyl.moe</title>
+  </head>
+  <body>
     <div class="main">
-        <nav class="navigation">
-            <a href="/">cyl.moe</a>
-        </nav>
-        <article>
-            <header>
-                <h1 class="article-title">数据的流观点</h1>
-                <div class="article-info">
-                    <span>创建于：<time datetime="2019-04-21 19:38">2019-04-21 19:38</time></span>
-                </div>
-            </header>
-            <div class="article-content markdown-body">
-                <p>无论在一个软件系统的任何层面，当需要处理“<strong>历时过程</strong>中逐渐产生的（这段过程的终止时刻可能不存在或无法确定）数据”时，通常使用流的观点看待这些数据（尤其是当需要在这段过程发生期间处理这些数据时）。“数据历时产生”这一事实，可能是业务确实如此所致，也可能是程序员故意做的某种安排（例如通过分批将硬盘上的数据读入内存防止内存不足）。一种称为“响应式编程”的编程范式尤其适合这种情况。</p>
+      <nav class="navigation">
+        <a href="/">cyl.moe</a>
+      </nav>
+      <article>
+        <header>
+          <h1 class="article-title">数据的流观点</h1>
+          <div class="article-info">
+            <div>
+              <span
+                >Created At：<time datetime="1540739288387"
+                  >2018-10-28 23:08</time
+                ></span
+              >
+              <span
+                >Updated At：<time datetime="1608786703411"
+                  >2020-12-24 13:11</time
+                ></span
+              >
+            </div>
+            
+            <div>
+              Keywords: 
+              <span class="keyword">rxjs</span>
+              
+            </div>
+            
+          </div>
+        </header>
+        <div class="article-content markdown-body"><p>无论在一个软件系统的任何层面，当需要处理“<strong>历时过程</strong>中逐渐产生的（这段过程的终止时刻可能不存在或无法确定）数据”时，通常使用流的观点看待这些数据（尤其是当需要在这段过程发生期间处理这些数据时）。“数据历时产生”这一事实，可能是业务确实如此所致，也可能是程序员故意做的某种安排（例如通过分批将硬盘上的数据读入内存防止内存不足）。一种称为“响应式编程”的编程范式尤其适合这种情况。</p>
 <p>综上，<strong>流是时间序列</strong>。时间序列与大部分程序员已经习惯使用的空间序列（有序的数据结构，例如列表、数组、字符串等）<strong>可以互相转化</strong>。</p>
 <h1 id="构成流的事件">构成流的事件</h1>
 <p>在该历时过程中产生的每一批数据被称为一个<strong>事件（event）</strong>。事件，作为描述了某个时刻的信息的数据，由系统中的<strong>生产者</strong>生成，其特点包括尺寸小、自描述（self-contained）、不可变（immutable）。事件的表现形式可能是人类可读文本、JSON、二进制数据等。人们通常会把相关的一批事件归入同一个 topic 或 stream 之中。</p>
@@ -173,12 +189,11 @@
 <p>流为模拟具有内部状态的对象提供了另一种方式，即——用流表示某对象内部状态的历时过程。从本质上说，流将时间显式地表示了出来，因此就松开了被模拟的世界里的时间与求值过程中事件发生的顺序之间的紧密联系。——《SICP》</p>
 </blockquote>
 <p>由于流自带时序信息，命令式编程所依赖的语句间的先后关系变得不再重要，甚至不再必要，这与声明式，尤其是函数式编程极为契合，因为 FP 中的纯函数们从来不关心时序（否则就不纯了）。</p>
-<p>以 <a href=":/ec1a18ab3c974a3198c17f0500e9c2b2">Rxjs</a> 为例。Rxjs 中流被抽象为 Observable， 这是比 Node.js 中的 Stream 更抽象的事物。<a href="https://zhuanlan.zhihu.com/p/20241182">二者有何不同？Node 的 Stream 是和 Unix 哲学紧密契合的概念，非常好用，很简单，容易使用，这是它的优点；但它局限在 IO，通用性不如 Observable，而且提供的操作也仅仅限于 pipe 等最基础的操作，虽然有 event-stream 这样的第三方库加入了大量的实用操作（如map，join，split，merge等），但其功能丰富程度远不如Observable，为 composition 所做的努力也远不如 Observable。</a></p>
+<p>以 <a>Rxjs</a> 为例。Rxjs 中流被抽象为 Observable， 这是比 Node.js 中的 Stream 更抽象的事物。<a title="https://zhuanlan.zhihu.com/p/20241182" href="https://zhuanlan.zhihu.com/p/20241182">二者有何不同？Node 的 Stream 是和 Unix 哲学紧密契合的概念，非常好用，很简单，容易使用，这是它的优点；但它局限在 IO，通用性不如 Observable，而且提供的操作也仅仅限于 pipe 等最基础的操作，虽然有 event-stream 这样的第三方库加入了大量的实用操作（如map，join，split，merge等），但其功能丰富程度远不如Observable，为 composition 所做的努力也远不如 Observable。</a></p>
 <p>Observable <strong>更适用于声明式编程。而 Node Stream 更应该被理解为一种对产生值、使用值的过程的过程式封装</strong>（证据是后者暴露了大量能够干涉数据生产过程的 API）。</p>
 <p>通过在“流”这一抽象层次操作数据，程序员可以避免基于底层抽象维护程序状态，因为状态已经由历时的事件来表示了（甚至可以把程序视为“无状态”的。因为事件具有不可变的性质）。并且将流的生产逻辑（处理输入）和消费逻辑（改变内存中的数据/进行输出）解耦，也利于模块化。这种范式契合很多场景，例如 UI 编程。将用户在界面上的反复操作看作一个流，并基于它进行各种流处理、流传递操作，并得到一个输出流供其它内外组件消费（例如渲染界面）。</p>
-
-            </div>
-        </article>
+</div>
+      </article>
     </div>
-</body>
+  </body>
 </html>

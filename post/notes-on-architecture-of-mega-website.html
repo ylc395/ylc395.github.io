@@ -1,28 +1,38 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
-<head>
-    <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
-<link rel="stylesheet" href="https://cyl.moe/styles/main.css">
-<link rel="icon" href="/favicon.ico" type="image/x-icon">
-    <title>《大型网站技术架构》读书笔记 - 现代性魔法</title>
-</head>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<link rel="stylesheet" href="/_assets/main.css" />
+
+    <title>《大型网站技术架构》读书笔记  - cyl.moe</title>
+  </head>
+  <body>
     <div class="main">
-        <nav class="navigation">
-            <a href="/">cyl.moe</a>
-        </nav>
-        <article>
-            <header>
-                <h1 class="article-title">《大型网站技术架构》读书笔记</h1>
-                <div class="article-info">
-                    <span>创建于：<time datetime="2018-09-12 14:05">2018-09-12 14:05</time></span>
-                </div>
-            </header>
-            <div class="article-content markdown-body">
-                <p>大型网站由简单网站发展而来。在发展过程中，工程师逐步为网站添加或改进架构。发展过程中的每一步改进，都应结合网站的具体业务和当时的确切需求来进行，因此不存在一个固定的发展套路，也不存在一步到位的大型网站设计与建设。</p>
+      <nav class="navigation">
+        <a href="/">cyl.moe</a>
+      </nav>
+      <article>
+        <header>
+          <h1 class="article-title">《大型网站技术架构》读书笔记 </h1>
+          <div class="article-info">
+            <div>
+              <span
+                >Created At：<time datetime="1536764859649"
+                  >2018-09-12 23:07</time
+                ></span
+              >
+              <span
+                >Updated At：<time datetime="1624595441199"
+                  >2021-06-25 12:30</time
+                ></span
+              >
+            </div>
+            
+          </div>
+        </header>
+        <div class="article-content markdown-body"><p>大型网站由简单网站发展而来。在发展过程中，工程师逐步为网站添加或改进架构。发展过程中的每一步改进，都应结合网站的具体业务和当时的确切需求来进行，因此不存在一个固定的发展套路，也不存在一步到位的大型网站设计与建设。</p>
 <p>对一个网站，具有以下方面的要求：</p>
 <ul>
 <li>高性能</li>
@@ -93,7 +103,7 @@
 <p>引入缓存机制后，数据库读取不再是性能瓶颈，而运行着Web程序的单台的服务器成了性能瓶颈。在考虑优化Web程序的代码（这通常比较困难）之前，在更多的服务器上运行Web程序是首选方案。通过使用一个<strong>负载均衡服务器</strong>——即专门负责接收用户请求并将请求转发到不那么忙的服务器上的服务器，可以很轻松地提高网站的并发数和吞吐量。</p>
 <h5 id="引入消息队列">引入消息队列</h5>
 <p>使用消息队列将对用户请求的响应异步化，可以提高网站的并发数。当Web程序收到用户发来的请求后，将该请求触发的服务器操作以消息的形式发送给消息队列（维护消息队列的程序可以在本机，也可能是在其它的消息队列服务器上），并立刻给用户返回响应。而消息队列中的消息，稍后将会由消息消费程序来读取，并做出相应的数据库IO操作。此时用户的请求才算真正处理完，但用户在此前已得到响应，得到了顺畅的体验。</p>
-<figure data-type="image" tabindex="1"><img src=":/d9d60eb946f24411a0a13e8243472a29" alt="534df62d421bbad935729e6e015abb9b.png" loading="lazy"></figure>
+<p><img src="/_resources/d9d60eb946f24411a0a13e8243472a29.png" /></p>
 <p>消息队列主要解决了应用耦合、异步处理、流量削锋等问题。</p>
 <h5 id="程序代码优化">程序代码优化</h5>
 <ul>
@@ -233,7 +243,7 @@
 <li>监控、统计各模块的工作情况</li>
 <li>对各模块进行版本管理</li>
 <li>负载均衡与失效转移</li>
-<li>...</li>
+<li>…</li>
 </ul>
 <p>分布式服务框架不应当对各模块的代码造成过多侵入。</p>
 <h2 id="数据的可扩展性">数据的可扩展性</h2>
@@ -247,9 +257,8 @@
 <h2 id="信息过滤">信息过滤</h2>
 <p>常见的敏感词检测算法基本都是Tire算法及其变体，更简单的实现有“多级Hash表”，再简单一些的可以使用正则匹配。</p>
 <p>对于黑名单功能，屏蔽列表很长的情况下可以使用布隆过滤器，但要注意它是一种概率算法。</p>
-
-            </div>
-        </article>
+</div>
+      </article>
     </div>
-</body>
+  </body>
 </html>
