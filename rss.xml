@@ -4,7 +4,7 @@
         <title></title>
         <link>undefined</link>
         <description>undefined</description>
-        <lastBuildDate>Mon, 01 Nov 2021 06:04:50 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 01 Nov 2021 07:00:52 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Joplin Pages Publisher</generator>
         <item>
@@ -152,6 +152,7 @@
 <p>类似的框架还有（不出意外，都是国产）：</p>
 <ul>
 <li><a href="https://zhuanlan.zhihu.com/p/393533835">MicroApp</a></li>
+<li><a title="https://garfish.top/" href="https://garfish.top/">garfish</a></li>
 <li><a href="https://zhuanlan.zhihu.com/p/169800579">berial</a></li>
 <li><a title="https://alfajs.io/" href="https://alfajs.io/">Alfa</a></li>
 <li><a title="https://github.com/phodal/mooa" href="https://github.com/phodal/mooa">mooa</a></li>
@@ -176,8 +177,8 @@
             <pubDate>Fri, 30 Oct 2020 02:48:00 GMT</pubDate>
             <content:encoded><![CDATA[<h1 id="前言">前言</h1>
 <h2 id="内容-样式-行为要分离吗">内容、样式、行为要分离吗？</h2>
-<p>内容、样式和行为分离是前现代的前端开发口号，它并没有错误，但是已经过时了：本质上来说，这一口号是适用于<strong>排版时代</strong>的——在那个时期，网页开发被视为是一种排版。</p>
-<p>在当今这个组件化开发 Web App 的时代，一个组件的内容、样式、行为如果不被放在一起，才是真正的疯狂。这就是为何各种前端程序员的 .js 文件中越来越充斥着 JSX/template 代码、CSS 代码。对于 CSS 而言，其很多功能也是诞生自排版时代的，例如 CSS 选择器、float、文档流等概念。这些功能在现代的 Web App 开发人员看来，便多少有</p>
+<p>内容、样式和行为分离是前现代的前端开发口号，它并没有错误，但是已经过时了：本质上来说，这一口号是适用于<strong>排版时代</strong>的——在那个时期，网页开发被视为是一种排版工作。</p>
+<p>在当今这个组件化开发 Web App 的时代，一个组件的内容、样式、行为如果不被放在一起，才是真正的疯狂。这就是为何各种前端程序员的 .js 文件中越来越充斥着 JSX/template 代码、CSS 代码。对于 CSS 而言，其很多功能也是诞生自排版时代的，例如 CSS 选择器、float、文档流等概念。这些功能在现代的 Web App 开发人员看来，便多少有点不合时宜了。</p>
 <h2 id="传统做法及其问题">传统做法及其问题</h2>
 <p>传统上，编写 CSS 代码的操作过程是：<strong>纵览文档结构（可选） -&gt; 为元素起名字（可能使用 <a title="https://www.zhihu.com/question/21935157/answer/20116700" href="https://www.zhihu.com/question/21935157/answer/20116700">BEM</a>、<a title="https://github.com/stubbornella/oocss/wiki" href="https://github.com/stubbornella/oocss/wiki">OOCSS</a>  等命名规范） -&gt; 用选择器选中 -&gt; 编写 CSS 语句</strong>。这一过程在现代前端项目中，有些不合时宜：</p>
 <ul>
@@ -274,14 +275,20 @@
 <h2 id="原子类">原子类</h2>
 <p>原子类思想本身就是一种历史悠久（可追溯到本世纪一零年代以前）的 CSS 方法论，但在现代前端的组件化开发模式流行起来之前，<a title="https://www.zhihu.com/question/22110291" href="https://www.zhihu.com/question/22110291">原子类思想一直被视为反工程的</a>。而伴随着前端 JS 组件化开发的流行，原子类思想的应用条件开始成熟，因此被开发者重新审视。</p>
 <p>原子类思想最为激进，是因为<a title="https://www.zhihu.com/question/337939566/answer/1105939733" href="https://www.zhihu.com/question/337939566/answer/1105939733">它注意到传统的“在 CSS 层面进行抽象”的必要性是十分可疑的</a>。这和 CSS-in-JS 社区的思想有些接近，但做得更进一步：用户连 CSS 都不用写，直接在了 HTML 上堆叠类名即可——不但跳过了<a title="#%E4%BC%A0%E7%BB%9F%E5%81%9A%E6%B3%95%E5%8F%8A%E5%85%B6%E9%97%AE%E9%A2%98" href="#%E4%BC%A0%E7%BB%9F%E5%81%9A%E6%B3%95%E5%8F%8A%E5%85%B6%E9%97%AE%E9%A2%98">传统步骤</a>的前三步，连第四步都简化了。</p>
-<p>现代的原子类解决方案 <a title="https://tailwindcss.com/" href="https://tailwindcss.com/">Tailwind.css</a> 利用现代 CSS 工程技术，提供了实践该方法论的全套工程工具。</p>
+<p>现代的原子类解决方案包括：</p>
+<ul>
+<li><a title="https://tailwindcss.com/" href="https://tailwindcss.com/">Tailwind.css</a> ：原子类 CSS 框架的首个成功的主流范例</li>
+<li><a title="https://windicss.org/guide/" href="https://windicss.org/guide/">windicss</a>（<a title="https://cn.windicss.org/" href="https://cn.windicss.org/">中文文档</a>同步）：tailwind 的上位替代。在兼容前者的基础上，大大减少了配置项和依赖，增强了易用性</li>
+<li><a title="https://github.com/antfu/unocss" href="https://github.com/antfu/unocss">unocss</a>：一个元原子类框架，或可称为原子类引擎。该工具可用于生成原子类框架（包括 tailwind 和 windi），适用于需要高度定制原子类的场景</li>
+</ul>
+<p><a href="https://zhuanlan.zhihu.com/p/425814828">《重新构想原子化CSS》</a>一文中详细对比了这三者，并着重推广了 unocss。</p>
 ]]></content:encoded>
         </item>
         <item>
             <title><![CDATA[Babel 的组成]]></title>
             <guid>5ebeddbc65be473883b4e432ae67e4bf</guid>
             <pubDate>Thu, 16 Jul 2020 13:50:01 GMT</pubDate>
-            <content:encoded><![CDATA[<nav class="table-of-contents"><ul><li><a href="#用于编译期作为devdependcies">用于编译期（作为devDependcies）</a></li><li><a href="#用于运行时作为dependencies">用于运行时（作为dependencies）</a></li><li><a href="#附录babelpreset-env的智能插件加载和-polyfill-引入">附录：@babel/preset-env的智能插件加载和 polyfill 引入</a></li><li><a href="#附录插件babelplugin-transform-runtime的行为">附录：插件@babel/plugin-transform-runtime的行为</a></li><li><a href="#附录polyfill-的处理">附录：polyfill 的处理</a><ul><li><a href="#使用-babelpreset-env">使用 @babel/preset-env</a></li><li><a href="#使用-babelplugin-transform-runtime">使用 @babel/plugin-transform-runtime</a></li><li><a href="#polyfill-providers">polyfill providers</a></li></ul></li><li><a href="#附录最佳实践">附录：最佳实践</a><ul><li><a href="#业务项目开发">业务项目开发</a></li><li><a href="#类库开发">类库开发</a></li></ul></li><li><a href="#附录其它实用工具">附录：其它实用工具</a></li></ul></nav><h1 id="用于编译期作为devdependcies">用于编译期（作为<code>devDependcies</code>）</h1>
+            <content:encoded><![CDATA[<h1 id="用于编译期作为devdependcies">用于编译期（作为<code>devDependcies</code>）</h1>
 <p>以下组件用于代码的编译，生成可发布的产品代码。</p>
 <ul>
 <li><code>@babel/core</code>：必须。一个可编程使用的工具。它依序做如下事：
@@ -365,6 +372,60 @@
 <li><code>@babel/node</code>：一个 Node.js CLI wrapper。使得通过命令行调用 Node.js 时令 Node.js 自动使用 babel 转译其加载的每个文件</li>
 <li><code>@babel/code-frame</code>：一个为文本生成带标记（例如行号，行指示符号，列指示符号等）的文本的工具。通常用于生成错误提示</li>
 <li><code>@babel/template</code>：待补充</li>
+</ul>
+<h1 id="附录tsc-vs-babel">附录：tsc vs. Babel</h1>
+<p>对于使用了 TypeScript 的项目，我们有两个选择：</p>
+<ul>
+<li>使用 tsc 编译源码</li>
+<li>使用 <a title="https://babeljs.io/docs/en/babel-preset-typescript" href="https://babeljs.io/docs/en/babel-preset-typescript">babel with typescript preset</a> 编译源码</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>使用 tsc</th>
+<th>使用 babel with ts preset</th>
+<th>评价</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ES 语法</td>
+<td>TS 通常只吸收成熟的 ES 语法</td>
+<td>可以使用最前沿的 ES 语法</td>
+<td>建议只使用成熟语法。<strong>打平</strong></td>
+</tr>
+<tr>
+<td>TS 语法</td>
+<td>100% 支持</td>
+<td>极个别的 TS 语法不支持</td>
+<td>基本<strong>打平</strong></td>
+</tr>
+<tr>
+<td>polyfill 支持</td>
+<td>无法自动按需加载</td>
+<td>preset-env 支持按需加载</td>
+<td>除非项目无须 polyfill，否则<strong>babel 胜</strong></td>
+</tr>
+<tr>
+<td>编译速度（不含 type check 时间）</td>
+<td><a title="https://github.com/Brooooooklyn/swc-node#benchmark" href="https://github.com/Brooooooklyn/swc-node#benchmark">tsc 更占优</a></td>
+<td>-</td>
+<td><strong>tsc 胜</strong></td>
+</tr>
+<tr>
+<td>编译产物（不含 polyfill）的体积与运行时效率</td>
+<td><a title="https://github.com/ReactiveX/rxjs/pull/2093" href="https://github.com/ReactiveX/rxjs/pull/2093">tsc 更占优</a></td>
+<td>-</td>
+<td><strong>tsc 胜</strong></td>
+</tr>
+</tbody>
+</table>
+<p>使用 babel with typescript preset 时的注意事项：</p>
+<ul>
+<li>需要在构建流程中额外配置 type check 过程。例如与 Webpack 一同使用时，可使用 <a title="https://github.com/TypeStrong/fork-ts-checker-webpack-plugin#readme" href="https://github.com/TypeStrong/fork-ts-checker-webpack-plugin#readme">fork-ts-checker-webpack-plugin</a>；或单独使用 tsc 的 type check 功能</li>
+<li>注意是否要开启 tsconfig.json 中的<a title="https://www.typescriptlang.org/tsconfig#isolatedModules" href="https://www.typescriptlang.org/tsconfig#isolatedModules"><code>isolatedModules</code></a>选项。开启该选项时，tsc type checker 将禁止你使用一些“可能引起非 tsc 的编译器（如 Babel）的错误行为”的语言特性，但其实你的编译器（如 Babel）可能是支持这些语言特性的</li>
+<li>若需要生成<a>.d.ts 文件</a>（通常作为库作者），则需额外使用 tsc。</li>
 </ul>
 ]]></content:encoded>
         </item>

@@ -24,15 +24,15 @@
                 ></span
               >
               <span
-                >Updated At：<time datetime="1633180765695"
-                  >2021-10-02 21:19</time
+                >Updated At：<time datetime="1635397793367"
+                  >2021-10-28 13:09</time
                 ></span
               >
             </div>
             
           </div>
         </header>
-        <div class="article-content markdown-body"><nav class="table-of-contents"><ul><li><a href="#用于编译期作为devdependcies">用于编译期（作为devDependcies）</a></li><li><a href="#用于运行时作为dependencies">用于运行时（作为dependencies）</a></li><li><a href="#附录babelpreset-env的智能插件加载和-polyfill-引入">附录：@babel/preset-env的智能插件加载和 polyfill 引入</a></li><li><a href="#附录插件babelplugin-transform-runtime的行为">附录：插件@babel/plugin-transform-runtime的行为</a></li><li><a href="#附录polyfill-的处理">附录：polyfill 的处理</a><ul><li><a href="#使用-babelpreset-env">使用 @babel/preset-env</a></li><li><a href="#使用-babelplugin-transform-runtime">使用 @babel/plugin-transform-runtime</a></li><li><a href="#polyfill-providers">polyfill providers</a></li></ul></li><li><a href="#附录最佳实践">附录：最佳实践</a><ul><li><a href="#业务项目开发">业务项目开发</a></li><li><a href="#类库开发">类库开发</a></li></ul></li><li><a href="#附录其它实用工具">附录：其它实用工具</a></li></ul></nav><h1 id="用于编译期作为devdependcies">用于编译期（作为<code>devDependcies</code>）</h1>
+        <div class="article-content markdown-body"><h1 id="用于编译期作为devdependcies">用于编译期（作为<code>devDependcies</code>）</h1>
 <p>以下组件用于代码的编译，生成可发布的产品代码。</p>
 <ul>
 <li><code>@babel/core</code>：必须。一个可编程使用的工具。它依序做如下事：
@@ -116,6 +116,60 @@
 <li><code>@babel/node</code>：一个 Node.js CLI wrapper。使得通过命令行调用 Node.js 时令 Node.js 自动使用 babel 转译其加载的每个文件</li>
 <li><code>@babel/code-frame</code>：一个为文本生成带标记（例如行号，行指示符号，列指示符号等）的文本的工具。通常用于生成错误提示</li>
 <li><code>@babel/template</code>：待补充</li>
+</ul>
+<h1 id="附录tsc-vs-babel">附录：tsc vs. Babel</h1>
+<p>对于使用了 TypeScript 的项目，我们有两个选择：</p>
+<ul>
+<li>使用 tsc 编译源码</li>
+<li>使用 <a title="https://babeljs.io/docs/en/babel-preset-typescript" href="https://babeljs.io/docs/en/babel-preset-typescript">babel with typescript preset</a> 编译源码</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>使用 tsc</th>
+<th>使用 babel with ts preset</th>
+<th>评价</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ES 语法</td>
+<td>TS 通常只吸收成熟的 ES 语法</td>
+<td>可以使用最前沿的 ES 语法</td>
+<td>建议只使用成熟语法。<strong>打平</strong></td>
+</tr>
+<tr>
+<td>TS 语法</td>
+<td>100% 支持</td>
+<td>极个别的 TS 语法不支持</td>
+<td>基本<strong>打平</strong></td>
+</tr>
+<tr>
+<td>polyfill 支持</td>
+<td>无法自动按需加载</td>
+<td>preset-env 支持按需加载</td>
+<td>除非项目无须 polyfill，否则<strong>babel 胜</strong></td>
+</tr>
+<tr>
+<td>编译速度（不含 type check 时间）</td>
+<td><a title="https://github.com/Brooooooklyn/swc-node#benchmark" href="https://github.com/Brooooooklyn/swc-node#benchmark">tsc 更占优</a></td>
+<td>-</td>
+<td><strong>tsc 胜</strong></td>
+</tr>
+<tr>
+<td>编译产物（不含 polyfill）的体积与运行时效率</td>
+<td><a title="https://github.com/ReactiveX/rxjs/pull/2093" href="https://github.com/ReactiveX/rxjs/pull/2093">tsc 更占优</a></td>
+<td>-</td>
+<td><strong>tsc 胜</strong></td>
+</tr>
+</tbody>
+</table>
+<p>使用 babel with typescript preset 时的注意事项：</p>
+<ul>
+<li>需要在构建流程中额外配置 type check 过程。例如与 Webpack 一同使用时，可使用 <a title="https://github.com/TypeStrong/fork-ts-checker-webpack-plugin#readme" href="https://github.com/TypeStrong/fork-ts-checker-webpack-plugin#readme">fork-ts-checker-webpack-plugin</a>；或单独使用 tsc 的 type check 功能</li>
+<li>注意是否要开启 tsconfig.json 中的<a title="https://www.typescriptlang.org/tsconfig#isolatedModules" href="https://www.typescriptlang.org/tsconfig#isolatedModules"><code>isolatedModules</code></a>选项。开启该选项时，tsc type checker 将禁止你使用一些“可能引起非 tsc 的编译器（如 Babel）的错误行为”的语言特性，但其实你的编译器（如 Babel）可能是支持这些语言特性的</li>
+<li>若需要生成<a>.d.ts 文件</a>（通常作为库作者），则需额外使用 tsc。</li>
 </ul>
 </div>
       </article>
