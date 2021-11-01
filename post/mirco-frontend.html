@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<link rel="stylesheet" href="/_assets/main.css" />
+
+    <title>“微前端”辨析 - cyl.moe</title>
+  </head>
+  <body>
+    <div class="main">
+      <nav class="navigation">
+        <a href="/">cyl.moe</a>
+      </nav>
+      <article>
+        <header>
+          <h1 class="article-title">“微前端”辨析</h1>
+          <div class="article-info">
+            <div>
+              <span
+                >Created At：<time datetime="1610092250342"
+                  >2021-01-08 15:50</time
+                ></span
+              >
+              <span
+                >Updated At：<time datetime="1635744324772"
+                  >2021-11-01 13:25</time
+                ></span
+              >
+            </div>
+            
+          </div>
+        </header>
+        <div class="article-content markdown-body"><h1 id="理论">理论</h1>
+<h2 id="微前端运行时复用方案及其适用场景">微前端：运行时复用方案及其适用场景</h2>
+<p>微前端这个概念的定义极为混乱，导致社区中谈论微前端时，颇有自说自话的感觉。本文旨在厘清目前社区中存在的对“微前端”一词的不同解释。</p>
+<p>总的来说，对微前端的各种解释的一个最大公约数，是指一种<strong>在运行时加载欲复用的代码的方法，并且你项目的编译工具并不知道被复用代码的存在，这意味着——待复用的代码虽然未必可以独立使用，但是是可独立部署的（有独立的部署流程，最终有一个可访问的 URL）</strong> 。因此传统的“根据路由动态加载组件”之类的方案，甚至更早的 <a>module loader（如 require.js 之类的）</a>，虽然也是运行时加载复用代码，但不是微前端方案。</p>
+<p>对于以下场景，运行时复用比传统的构建期复用更好：</p>
+<ul>
+<li>欲复用的代码源码不在你项目的 repo 里，因此无法在构建期复用。这可能是因为：
+<ul>
+<li>代码是其它团队的非公开代码</li>
+<li>属于无法合并为 monorepo 的另一个项目</li>
+<li>你嫌项目 repo 太大，正把这段代码移往别的 repo</li>
+</ul>
+</li>
+<li>欲复用的代码在你项目的 repo 里，但由于采用了不同的技术栈等原因，构建期复用比较麻烦</li>
+<li>欲复用的代码（例如，组件库）实际上被大量不同的项目同时复用，一旦改动，依赖于它的项目都需要重新编译、发布</li>
+</ul>
+<p><a title="https://twitter.com/dan_abramov/status/1132495687957012481" href="https://twitter.com/dan_abramov/status/1132495687957012481">Dan 认为</a>，微前端方案更像是由于团队原因而做的技术上的迂回。</p>
+<p><img src="/_resources/768b073e8e0444b79fc905c36e7831d9.png" /></p>
+<p>qiankun creator 的<a href="https://zhuanlan.zhihu.com/p/391248835">这篇文章</a>也指出了微前端本质是个团队架构问题。</p>
+<h2 id="微前端的两种主流解释">微前端的两种主流解释</h2>
+<p>现阶段（2021年底），在上述公约数的基础之上，社区里对“微前端”一词有两种主流解释。这两种解释的区别在于代码的复用粒度。</p>
+<ul>
+<li><strong>解释一：微前端 = 运行时动态加载执行 JS 模块</strong>。在英文社区中，由后端术语“micro-service 借鉴而来的术语 “micro-frontend” 基本上是指这种解释
+<ul>
+<li>代表框架： single-SPA</li>
+<li>框架定位：<a title="https://single-spa.js.org/docs/faq/#what-does-single-spa-do" href="https://single-spa.js.org/docs/faq/#what-does-single-spa-do">运行时模块（组件、utils）加载器</a></li>
+</ul>
+</li>
+<li><strong>解释二：微前端 = 运行时动态加载执行 App</strong>。在中文社区中，受 qiankun 的影响，术语“微前端”基本是指这种解释
+<ul>
+<li>代表实现：qiankun</li>
+<li>框架定位：升级版的 iframe</li>
+</ul>
+</li>
+</ul>
+<p>搜索社区文章时应当注意，<a title="https://micro-frontends.org/" href="https://micro-frontends.org/">有些文章</a>（通常是英文社区的文章）使用解释一；有些文章使用解释二（通常是中文社区的文章）。有些文章在一篇文章中混用了两种解释。</p>
+<h3 id="联系">联系</h3>
+<p>这两种解释并未泾渭分明，而是有所联系的——<strong>App 级的复用粒度，也可以视为模块级复用（将 main.js 视为模块）</strong>。正因如此，qiankun 是基于 single-SPA 的封装。</p>
+<h3 id="区别">区别</h3>
+<h4 id="直接动机">直接动机</h4>
+<ul>
+<li>模块级复用（single-SPA）：由于<strong>工程原因</strong>，你需要跨 repo 或跨技术栈的代码模块复用</li>
+<li>App 级复用（qiankun）：因为<strong>存量的业务原因</strong>，你需要集成多个现有的独立 App；因为<strong>存量的业务或工程原因</strong>，你想拆分一个大 App 为多个小的独立 App，再集成</li>
+</ul>
+<h4 id="主要关注点">主要关注点</h4>
+<ul>
+<li>模块级复用（single-SPA）：模块生命周期、模块加载（JS Entry）、依赖共享（<a title="https://single-spa.js.org/docs/recommended-setup/#shared-dependencies" href="https://single-spa.js.org/docs/recommended-setup/#shared-dependencies">shared dependencies</a>）、<a title="https://single-spa.js.org/docs/recommended-setup/#inter-app-communication" href="https://single-spa.js.org/docs/recommended-setup/#inter-app-communication">模块间通信</a>、模块 API 版本管理</li>
+<li>App 级复用（qiankun）：App 生命周期、App 资源（预）加载（<a href="https://zhuanlan.zhihu.com/p/369414267">HTML Entry</a>）、<a>CSS / JS 沙箱</a>、<a href="https://mp.weixin.qq.com/s/TAXP7ipDdtb2Jb-L3QHszA">主/子应用路由</a>等</li>
+</ul>
+<h2 id="微前端的其它解释">微前端的其它解释</h2>
+<ul>
+<li>宏大叙事型：常见于英语社区中。大体上描述了某种前后端协同渲染、分发页面组件的方案，本文不进行详细介绍，可以参阅：
+<ul>
+<li><a title="https://github.com/puzzle-js/puzzle-js" href="https://github.com/puzzle-js/puzzle-js">puzzle.js</a></li>
+<li><a title="https://www.mosaic9.org/" href="https://www.mosaic9.org/">Project Mosaic</a></li>
+<li><a title="https://opencomponents.github.io" href="https://opencomponents.github.io">Open Component</a></li>
+<li><a title="https://fmfe.github.io/genesis-docs/" href="https://fmfe.github.io/genesis-docs/">Genesis</a>（国产）</li>
+</ul>
+</li>
+<li>待续…</li>
+</ul>
+<h2 id="牢记微前端不可作为业务架构选型的一种选项">牢记：微前端不可作为业务架构选型的一种选项！</h2>
+<p>正如前文反复强调的那样，微前端方案（无论何种解释），本质上是受工程现状或团队权责问题困扰的无奈之举，<strong><a href="微前端是技术负债吗？ - 若愚的回答 - 知乎 https://www.zhihu.com/question/480072987/answer/2084795116">是一种解决存量问题的方案</a>，通常不可将其作为全新项目中“进行业务划分的架构选型”的选项</strong>（除非你的项目在立项之初就碰到了项目团队的权责问题）。对于新项目，你的真实问题其实是——<strong>如何处理领域模块</strong>。可参考这几篇：</p>
+<ul>
+<li><a href="微前端是技术负债吗？ - 知乎 https://www.zhihu.com/question/480072987/answer/2065774545">微前端是技术负债吗？- 匿名用户的回答</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/342843429">简单两步，教你所谓的’微前端’</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/342416778">谈谈‘微前端’</a></li>
+</ul>
+<p>一句话：<strong>在新项目中，考虑引入“微前端”的场景应当是业务无关的性能优化/部署发布流程优化</strong>。</p>
+<p>此处列出一些在我看来，实质上是“试图解决一些本不存在的问题”的方案。它们共同的一个显著特点是，都提供了 CLI 工具供用户在创建新项目时使用，并让用户把这些项目组合起来形成“微前端”：</p>
+<ul>
+<li><a title="https://docs.piral.io/guidelines/tutorials/01-introduction" href="https://docs.piral.io/guidelines/tutorials/01-introduction">Piral</a></li>
+<li><a title="https://github.com/efoxTeam/emp" href="https://github.com/efoxTeam/emp">EMP</a>（国产）</li>
+<li><a href="https://zhuanlan.zhihu.com/p/386120404">Fronts</a>（国产）</li>
+<li><a title="https://github.com/SAP/luigi" href="https://github.com/SAP/luigi">luigi</a></li>
+<li><a title="https://frint.js.org/" href="https://frint.js.org/">frintjs</a></li>
+</ul>
+<p>最后，即使是为处理存量问题，也应该意识到，微前端只是一个选项，而不是标准答案。此外，绝对不能使用任何微前端方案加载不可 100% 信任的第三方代码。</p>
+<h1 id="工程">工程</h1>
+<h2 id="无框架实现">无框架实现</h2>
+<ul>
+<li><a href="https://tech.meituan.com/2020/02/27/meituan-waimai-micro-frontends-practice.html">微前端在美团外卖的实践</a></li>
+<li><a href="https://tech.meituan.com/2018/09/06/fe-tiny-spa.html">用微前端的方式搭建类单页应用</a></li>
+</ul>
+<p>美团的这两篇文章介绍了不使用框架，手动进行 App 级微前端项目改造的过程。</p>
+<h2 id="框架实现">框架实现</h2>
+<h3 id="框架介绍single-spa">框架介绍：single-SPA</h3>
+<p>更详细的介绍可见 <a href="https://zhuanlan.zhihu.com/p/378346507">【微前端】single-spa 到底是个什么鬼</a> 一文</p>
+<h4 id="single-spa-的作用">single-SPA 的作用</h4>
+<p>sinle-SPA 的只起一个简单的唯一作用：<strong>在运行时用用户给定的加载方法，加载 JS 模块，并执行上面暴露出的生命周期钩子</strong>。</p>
+<p>可见，single-SPA 甚至没提供<a>加载器（loader）</a>的实现（虽然以官方推荐的形式建议大家<a title="https://single-spa.js.org/docs/recommended-setup#systemjs" href="https://single-spa.js.org/docs/recommended-setup#systemjs">用 SystemJS</a>）。qiankun 使用了自己实现（而不是 single-SPA 官方推荐的 SystemmJS）的一套基于 umd 格式的加载方案（见源码文件 <a title="https://github.com/umijs/qiankun/blob/master/src/loader.ts" href="https://github.com/umijs/qiankun/blob/master/src/loader.ts">loader.ts</a>）。</p>
+<h4 id="single-spa-的三类模块">single-SPA 的三类模块</h4>
+<p>single-SPA 划分了三类可复用的模块：Application、Parcel、Utility</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Application</th>
+<th>Parcel</th>
+<th>Utility</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>模块规模</td>
+<td>大。通常是某个 App 的 main.js</td>
+<td>可大可小</td>
+<td>小</td>
+</tr>
+<tr>
+<td>专门的 API</td>
+<td>有</td>
+<td>有</td>
+<td>无。<a title="https://single-spa.js.org/docs/recommended-setup#utility-modules-styleguide-api-etc" href="https://single-spa.js.org/docs/recommended-setup#utility-modules-styleguide-api-etc">用户需自行调用加载逻辑，并正确配置 Webpack 进行加载</a></td>
+</tr>
+<tr>
+<td>根据路由触发加载/卸载</td>
+<td>是</td>
+<td>否</td>
+<td>否</td>
+</tr>
+<tr>
+<td>生命周期</td>
+<td>single-SPA 自动控制（也支持手动 unload）</td>
+<td>手动控制</td>
+<td>无</td>
+</tr>
+<tr>
+<td>额外能力</td>
+<td>被注入了加载 Parcel 的能力（且自动同步生命周期）</td>
+<td>无</td>
+<td>无</td>
+</tr>
+</tbody>
+</table>
+<p>综上，Application 配置简单功能更多，Parcel 控制灵活。基于 single-SPA 的 qiankun ，有时将子应用视为 single-SPA 的 Application（当根据声明式路由进行加载时），有时则是 Parcel（当使用命令式进行加载时）。</p>
+<h3 id="框架介绍qiankun">框架介绍：qiankun</h3>
+<p>作为 App 级微前端框架的代表性作品，qiankun 的功能是此类框架的标准功能。可见 <a href="https://zhuanlan.zhihu.com/p/379744976">【微前端】qiankun 到底是个什么鬼</a> 一文。</p>
+<p>类似的框架还有（不出意外，都是国产）：</p>
+<ul>
+<li><a href="https://zhuanlan.zhihu.com/p/393533835">MicroApp</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/169800579">berial</a></li>
+<li><a title="https://alfajs.io/" href="https://alfajs.io/">Alfa</a></li>
+<li><a title="https://github.com/phodal/mooa" href="https://github.com/phodal/mooa">mooa</a></li>
+<li><a title="https://github.com/worktile/ngx-planet" href="https://github.com/worktile/ngx-planet">ngx-planet</a></li>
+<li><a href="https://www.tangshuang.net/7920.html">mfy</a></li>
+<li><a title="https://micro-frontends.ice.work/" href="https://micro-frontends.ice.work/">icestark</a></li>
+<li><a href="https://tech.meituan.com/2019/12/26/meituan-bifrost.html">Bifrost</a>（未开源）</li>
+</ul>
+<p>它们的目的基本一致—— 即 App 级复用。个别功能/实现/目标框架略有不同。例如 MicroApp, mfy 主打无侵入性，<a title="https://github.com/aliyun/alibabacloud-alfa/issues/51" href="https://github.com/aliyun/alibabacloud-alfa/issues/51">Afla 主打依赖共享</a>等。</p>
+<h2 id="依赖共享及其方案">依赖共享及其方案</h2>
+<p>依赖共享指的是，当用微前端方案在运行时加载模块 / App 时，防止重复加载相同的内容（如模块、依赖库等等）。甚至有人认为，<strong>微前端基本上等价于依赖共享</strong>（这种观点着重强调低运行时开销的复用能力）。</p>
+<p>此处介绍依赖共享的两种实现方案（<a href="https://zhuanlan.zhihu.com/p/234964127">这两种方案可任意与 single-spa / qiankun</a>或其它微前端框架进行集成）：</p>
+<ul>
+<li><a title="https://github.com/systemjs/systemjs/blob/master/docs/import-maps.md" href="https://github.com/systemjs/systemjs/blob/master/docs/import-maps.md">SystemJS 的 import maps</a></li>
+<li><a title="https://webpack.js.org/concepts/module-federation/" href="https://webpack.js.org/concepts/module-federation/">Webpack 5 的模块联邦</a>。它甚至声称自己本身就是一个微前端方案（它确实满足本文开头概括的“微前端”公约数）</li>
+</ul>
+</div>
+      </article>
+    </div>
+  </body>
+</html>
