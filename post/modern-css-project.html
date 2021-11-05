@@ -24,8 +24,8 @@
                 ></span
               >
               <span
-                >Updated At：<time datetime="1635390547803"
-                  >2021-10-28 11:09</time
+                >Updated At：<time datetime="1636036643946"
+                  >2021-11-04 22:37</time
                 ></span
               >
             </div>
@@ -37,7 +37,7 @@
 <p>内容、样式和行为分离是前现代的前端开发口号，它并没有错误，但是已经过时了：本质上来说，这一口号是适用于<strong>排版时代</strong>的——在那个时期，网页开发被视为是一种排版工作。</p>
 <p>在当今这个组件化开发 Web App 的时代，一个组件的内容、样式、行为如果不被放在一起，才是真正的疯狂。这就是为何各种前端程序员的 .js 文件中越来越充斥着 JSX/template 代码、CSS 代码。对于 CSS 而言，其很多功能也是诞生自排版时代的，例如 CSS 选择器、float、文档流等概念。这些功能在现代的 Web App 开发人员看来，便多少有点不合时宜了。</p>
 <h2 id="传统做法及其问题">传统做法及其问题</h2>
-<p>传统上，编写 CSS 代码的操作过程是：<strong>纵览文档结构（可选） -&gt; 为元素起名字（可能使用 <a title="https://www.zhihu.com/question/21935157/answer/20116700" href="https://www.zhihu.com/question/21935157/answer/20116700">BEM</a>、<a title="https://github.com/stubbornella/oocss/wiki" href="https://github.com/stubbornella/oocss/wiki">OOCSS</a>  等命名规范） -&gt; 用选择器选中 -&gt; 编写 CSS 语句</strong>。这一过程在现代前端项目中，有些不合时宜：</p>
+<p>传统上，编写 CSS 代码的操作过程是：<strong>纵览文档结构（可选） -&gt; 为元素起名字（可能使用 <a title="https://www.zhihu.com/question/21935157/answer/20116700" href="https://www.zhihu.com/question/21935157/answer/20116700">BEM</a>、<a title="https://github.com/stubbornella/oocss/wiki" href="https://github.com/stubbornella/oocss/wiki">OOCSS</a>  等命名规范） -&gt; 用选择器选中 -&gt; 编写 CSS（或者 Sass / Less 等）语句</strong>。这一过程在现代前端项目中，有些不合时宜：</p>
 <ul>
 <li>由于组件化开发，前端工程师大多数时候面对着的是某一个（作为组件渲染产物的） HTML 片段。因此<strong>传统步骤的前三步，要么已经没有存在的基础，要么纯粹是添麻烦</strong></li>
 <li>CSS 总是全局的。<strong>JS 代码早已可被封装为模块，CSS 代码却不行</strong>。这导致在大型应用中：
@@ -126,7 +126,7 @@
 <p>上文提到到很多 CIJ 方案也被移植到 Vue 社区等。例如 <a title="https://github.com/styled-components/vue-styled-components" href="https://github.com/styled-components/vue-styled-components">vue-styled-components</a> 等。此处不再赘述。</p>
 <h1 id="框架无关的通用方案">框架无关的通用方案</h1>
 <h2 id="css-module">CSS Module</h2>
-<p><a title="https://github.com/css-modules/css-modules" href="https://github.com/css-modules/css-modules">CSS Module</a> 是社区对 CSS 语法和语义对一种扩展，相应的实现有<a title="https://github.com/webpack-contrib/css-loader#modules" href="https://github.com/webpack-contrib/css-loader#modules">Webpack CSS-loader</a>（需开启 module 模式）、<a title="https://github.com/css-modules/postcss-modules" href="https://github.com/css-modules/postcss-modules">Postcss-module</a> 等。</p>
+<p><a title="https://github.com/css-modules/css-modules" href="https://github.com/css-modules/css-modules">CSS Module</a> 是社区对 CSS 语法和语义对一种扩展，相应的实现有<a title="https://github.com/webpack-contrib/css-loader#modules" href="https://github.com/webpack-contrib/css-loader#modules">Webpack CSS-loader</a>（需开启 module 模式）、<a title="https://github.com/css-modules/postcss-modules" href="https://github.com/css-modules/postcss-modules">Postcss-module</a> ，以及适用于 TS 的 <a title="https://github.com/seek-oss/vanilla-extract" href="https://github.com/seek-oss/vanilla-extract">vanilla-extract</a>等。</p>
 <p>在语义上，CSS Module 方案将每个 CSS 文件视为一个模块，默认其中的每一个 class 选择器都是模块级的（并且模块间可以互相导入导出）。在实现上，则是在编译时将每个 CSS module 内的所有 class name 替换成各不重复的随机字符串。对通过<code>import</code>语句引用了 CSS module 内的 class name 的 JS module，也会将其中的相关引用替换为这些随机字符串。</p>
 <p>对大部分场景而言，该方案没有显著的缺点。 <a title="https://vue-loader.vuejs.org/guide/css-modules.html" href="https://vue-loader.vuejs.org/guide/css-modules.html">Vue-loader 也支持直接在 SFC 内写 CSS Module</a>。</p>
 <h2 id="原子类">原子类</h2>
