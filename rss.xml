@@ -4,7 +4,7 @@
         <title></title>
         <link>undefined</link>
         <description>undefined</description>
-        <lastBuildDate>Fri, 05 Nov 2021 07:35:41 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 05 Nov 2021 08:16:44 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Joplin Pages Publisher</generator>
         <item>
@@ -12,81 +12,152 @@
             <guid>22674ba34aff4a16b3317f106503b43b</guid>
             <pubDate>Thu, 04 Nov 2021 13:29:39 GMT</pubDate>
             <content:encoded><![CDATA[<p><a title="https://www.bilibili.com/video/BV1Kv4y1f7hm/" href="https://www.bilibili.com/video/BV1Kv4y1f7hm/">https://www.bilibili.com/video/BV1Kv4y1f7hm/</a></p>
-<h3 id="transcript">Transcript</h3>
+<blockquote>
 <p>(Editor’s note: transcripts don’t do talks justice. This transcript is useful for searching and reference, but we recommend watching the video rather than reading the transcript alone! For a reader of typical speed, reading this will take 15% less time than watching the video, but you’ll miss out on body language and the speaker’s slides!)</p>
+</blockquote>
 <p>注意：演讲稿文本便于搜索和引用，但不推荐只看演讲稿，不看原视频。虽然只看演讲稿能省下 15% 的时间，但错过了演讲者的肢体语言和幻灯片（本文还删掉了一些演讲过程中抖的机灵——译注）。</p>
+<blockquote>
 <p>[APPLAUSE] Hi. I learned to drink a lot of water. Hi, my name is Dan Abramov. I work on a JavaScript library called React. This is actually the first conference that I speak at that is not specific to React with JavaScript. So I’m just curious, have any of you ever used React at all. OK. Yeah, a lot of people use React. That’s cool. This talk is not about React. You can say it’s a talk about something that, if I had a time machine and could come back to my past self, I would tell myself that talk. So it’s a talk about the code base far, far away, deep under the sea.</p>
+</blockquote>
 <p>大家好，我是 Dan Abramov，我一直在开发一个叫 React 的库。这个演讲不是关于 React 与 JavaScript 的，可以这么说，如果有一台时光机，我会回到过去，把这个演讲放给过去的自己看。这个演讲是关于一个遥远的、深海里的代码库的（译注：演讲者意在模仿童话故事的开头，而不涉及任何比喻或隐喻）。</p>
+<blockquote>
 <p>And it’s a code base that I worked on a long time ago. And in the code base, there were two different modules, two files. And my colleague and friend was working on a new feature in one of those files. And they noticed that actually that feature, something very similar was already implemented in another file. So they thought, well, why don’t I just copy and paste that code because it’s pretty much the same thing?</p>
+</blockquote>
 <p>这个代码库是我很久以前参与的。在那里面，有两个不同模块，就是两个文件。有一次，我和我同事要在其中一个文件里开发新功能，然后他们发现，另一个文件里已经有一个非常类似的实现了，所以他们觉得，既然基本是同样的功能，何不直接复制粘贴过来？</p>
+<blockquote>
 <p>And they ask me to review the code. And I just read all the books about the best practices. Pragmatic Programmer, Clean Coder, Well Groomed Coder, and I knew that I needed to-- you’re not supposed to copy and paste code because it creates a maintenance burden, it’s pretty hard to work with. I just learned this acronym DRY, which stands for don’t repeat yourself. And I was like this looks like a copy paste, so can we DRY it up a little bit?</p>
+</blockquote>
 <p>他们复制粘贴好后，让我做 code review。那段时间我刚好读了一大堆讲述编程最佳实践的书，我学到了不应该复制粘贴代码，因为这对后续维护造成了困难。我刚学到一个术语——DRY，don’t repeat yourself，看了同事的代码，就想，何不对这些复制粘贴的代码来个 DRY？</p>
+<blockquote>
 <p>And so my colleague was like, yeah, sure, I can totally extract that code to a separate module and make those two files depend on that new code. And so an abstraction was born. OK. So when I say abstraction, I mean it doesn’t matter which language you’re using. It could be a function or a class, a module, a package, something reusable that you can use from different places in your code base.</p>
+</blockquote>
 <p>然后我同事说，对，我确实可以把这段重复代码抽成一个单独的模块，然后让现有的两个文件都依赖它。这么一来，一个新的“抽象”就成了！注意了，我这里说的“抽象”，和任何编程语言无关，抽象的形式可能是函数、类、模块或者包，总之是某种你能在代码库的其它地方复用的东西。</p>
+<blockquote>
 <p>And so it seems like, this is great. And they live happily ever after. So let’s see let’s see how that abstraction evolved. So the next thing that happened, we hadn’t looked at that code for a while but then we were working on a new feature and it actually needed something very similar. So let’s say that the original abstraction was asynchronous, but we needed something that had pretty much the same exact shape, except it was synchronous.</p>
+</blockquote>
 <p>看上去不错哦！从此之后，大家过上了幸福快乐的生活，也不怎么管抽出去的那个模块了。然而好景不长，后来又来了个需求，这个需求和之前的那个又非常类似，这次的区别在于，要求的实现是同步的，而之前我们搞的那个是异步的。</p>
+<blockquote>
 <p>So we couldn’t directly reuse that code anymore, but it also felt really bad to copy and paste it because it’s pretty much exactly the same code except it’s slightly different. And, well, it looks like we shouldn’t repeat ourselves so let’s just unify those two parts and make our abstraction a bit fancier so that it can handle the case as well. And we felt really good about it. It is a bit unorthodox, but that’s what happens when code meets real life, right? You make some compromises, and at least we didn’t have to duplicate the code, because that would be bad, right?</p>
+</blockquote>
 <p>也就是说，我们无法直接复用之前的那个模块，但是复制粘贴一通基本一致的代码也很恼人。好吧，这次我们结合同步/异步这两种需求，把那个抽象搞得更通用一点。其实这种妥协的做法，在真实世界里每天都在发生，但至少我们没有重复的代码了。挺好！</p>
+<blockquote>
 <p>So what happened next is we found out that actually, this new code, this new feature, had a bug in it, and that bug was because we thought that it needs exactly some the same code as we have. But actually it needed something slightly different. But we can fix that bug, of course, by adding a special case. So our abstraction, we can have an if statement. If it’s like this particular case, then do something slightly different. Sure. Ship it. Because that happens to every abstraction, right?</p>
+</blockquote>
 <p>然而，后来我们发现，这段新功能代码里存在 Bug！Bug 的原因是，我们误以为两个功能的实现在代码上是一致的，然而不是！两个功能其实有一些小小的不同。不过，我们能搞定这个 Bug，只要在那段抽象里加一个特殊 case 处理的逻辑就行，简单来说就是加个 if 语句的事儿！OK，搞定了，毕竟每个抽象都会遇到这种麻烦事儿，我们属实是轻车熟路了。</p>
+<blockquote>
 <p>And so as we were working with that code, we actually noticed that the original code also had a bug. So those two cases that we thought were the same, they were also slightly different, we just didn’t realize it at the time. And so we added another special case. And at this point, this abstraction looks a bit weird and intimidating. So maybe lets make it more generic. Why do we have all those special cases in the abstraction?</p>
+</blockquote>
 <p>然而，在我们做这个改动时，又发现了那段代码里存在的类似问题！好吧，再加个 if 语句。此时，这段抽象看起来已经有点奇怪了，它处理了很多具体的 case，这不好。</p>
+<blockquote>
 <p>Let’s pull them out from the abstraction where they belong in our concrete use cases. So looks like this. So now our abstraction doesn’t know about any concrete cases. It is very generic, very beautiful. Nobody really understands what it represents anymore. Oh, by the way, we need to add, now that it’s parametrized from different places, we need to make sure that all code size are parametrized.</p>
+</blockquote>
 <p>那么，让我们把这些具体 case 的处理移出这段抽象吧。ok，现在这段抽象里不包含任何具体 case 的处理了，这段抽象现在非常通用，非常漂亮，通用到一般人都看不出它要干啥了。顺便一提，我们得给这个抽象加个参数，这个参数表示抽象在哪里被调用。</p>
+<blockquote>
 <p>But it was such a gradual progression that at each step it makes sense to the people writing and reviewing the code, so we just left it at that. And some time passed. And so, during that time, some people have left the team, some people have joined the team. There were many fixes. Somebody needed to just do this one small fix here. I don’t really know what this thing is supposed to be doing but just fix it up a little bit, add this new feature, improve the metrics. So we ended up with something like this, right?</p>
+</blockquote>
 <p>这一过程是随着代码库的开发渐渐发生的，不在话下。随着时间的推移，开发团队里有人离开，有人加入。虽然并不清楚那些抽象的具体作用，但是代码库里渐渐加入了各种 bugfix，feature，指标优化。事情总是这样，对吧。</p>
+<blockquote>
 <p>And again, each of those individual steps kind of made sense. But if you lose track of what you were trying to do originally, you don’t really know that you have a cyclical dependency or this weird thing that is growing somewhere to the side just because you don’t see the whole picture anymore. And, of course, in real life, that’s actually where the story ends because nobody wanted to touch the part of the code base and it just was stagnant for a long time and then somebody rewrote it. And maybe got a promotion. I don’t know.</p>
+</blockquote>
 <p>代码库内容的每一次改动，都有其意义。但如果你已经弄不清它们在一开始是做什么的，那么你就会碰到诸如循环引用的问题，或者各种奇奇怪怪的东西。毕竟，我们已经失去了对代码库的全景视野了。在现实世界中，通常这就是故事的结局，因为没人想动那部分的抽象，它们的迭代停滞了。直到有一天，有人重写了它们。或许重写使得变得它们变好了吧！我不确定。</p>
+<blockquote>
 <p>But if we could go back in time, because it’s a talk, it’s not real life, if we had a time machine we could go back and fix it, right? So I want to go back to the point where the abstraction still made sense. But if we had this third case and we really didn’t want to duplicate that code even though it needed something slightly different. And they were like, yeah, sure, let’s compromise on our abstraction. Make it funny. So this is if I from today was there, what I would’ve told myself is, please inline this abstraction.</p>
+</blockquote>
 <p>那么，假设我们有个时光机器，可以回到一开始，那我们就能挽回局面。让我们回到那个抽象的意义很清晰的那个时间点。在第三个 case 出现时，我会告诉那时候的自己，妥协吧，把那段抽象“内联”就完事了！</p>
+<blockquote>
 <p>And so what I mean by inline, I mean literally take that code and just copy and paste it back to the places that use it. And that creates some duplication but that destroys that potential monster we were in the process of creating. And of course duplication isn’t perfect in long term, but wrong abstraction is also not perfect in long term. So we need to balance these two problems. And so the way this helps us is that now if we have a bug here and we realized actually this thing is supposed to do something different, we can just change it. And it doesn’t affect any of the other places because it’s isolated. And similarly, maybe we get a different bug here and we also change it.</p>
+</blockquote>
 <p>我这里所谓的“内联”，就是复制粘贴。复制粘贴制造了重复代码，但是却把那头后来越长越大的怪兽扼杀在了摇篮里。当然，长期来看重复代码并不好，但又有平衡之处：如果我们发现这段功能其实要做的是另一件事，我们直接就地改动就完事了。就算引入了新 Bug，也能就地解决。</p>
+<blockquote>
 <p>And I’m not suggesting that you should always copy paste things. In longer term, maybe you realize that these pieces really stabilized and they make sense. And maybe you pull something out and it might not be the thing that you originally thought was a good abstraction. Might be something different. And a thing like this is as good as it gets in practice. And if I heard this when I was a sweet summer child, I would have said that that’s not what they tell us. I heard that copy pasting is really bad.</p>
+</blockquote>
 <p>我不是说我们就一直复制粘贴了事。长期来看，或许有一天你会发现，这些重复的片段的功能其实很稳定一致，然后，你会把它们抽出来。你会发现，此时抽出来的东西——一个经过实践考验的东西，和你当初想象中的抽象不太一样。如果把这一经验说给年少无知的我听，我可能不会承认，因为我一直被教育“复制粘贴坏坏”。</p>
+<blockquote>
 <p>And I think it’s actually a self-perpetuating loop. So what happens is that developers learn best practices from the previous generation and they try to follow them. Because there were concrete problems and concrete solutions that were born out of experience. And so the next generation tries to pass them on. But it’s hard to explain all this context and all this trade off, so they just get flattened into these ideas of best practices and anti-patterns.</p>
+</blockquote>
 <p>这是个永恒的循环：程序员们从前辈那里学习最佳实践，因为那些最佳实践确实是经受了具体问题、具体场景的考验的。然后程序员们再把这些知识传给下一代。其中，有些东西很难解释为什么，因为涉及到的是在具体场景下的取舍，留给后人的也只能是一条条现成结论了。</p>
+<blockquote>
 <p>And so they get taught to the new generation. But if the new generation doesn’t understand the trade offs and the reasons they came to these conclusions, they don’t have the context to decide when it’s actually a bad idea and how far can you stretch this. So they run into their own problems from trying to take these best practices and anti-patterns to extreme. And so they teach the next generation. And maybe this is just you can’t break out of this loop and it’s just bound to happen over and over again, which is maybe fine.</p>
+</blockquote>
 <p>那么，新一代程序员由于不了解这些结论是怎么来的，面对具体问题时，他们可能无法分辨这些结论到底管不管用，或者有多管用，这就导致了他们为了最佳实践而最佳实践（例如无条件 DRY——译注），最终碰了一鼻子灰。</p>
+<blockquote>
 <p>I think one way to try to break this loop is just when we teach something to the next generation, we shouldn’t just be two-dimensional and say here’s best practices and anti-patterns. But we should try to explain what is it that you’re actually trading away. What are the benefits and what are the costs of this idea? And so when we talk about the benefits of abstraction, of course it has benefits. The whole computer is a huge stack of abstractions. And I think concrete benefits are-- abstractions let you focus on a specific intent, right? So if you have this thing and they have to keep it all in their head.</p>
+</blockquote>
 <p>我认为，跳出这种循环的一种方法是，我们教下一代程序员时，不能光给出“这种做法好，那种做法不好”的二极管式结论，我们应当解释这一结论是怎么权衡得出的——当采纳这一结论时，你得到了什么，又失去了什么？说回“抽象”，抽象当然很好，毕竟整个计算机体系都是建立在抽象层次上的，我认为抽象的具体好处是：抽象让你专注于某个具体事务（而不被其它事情干扰——译注）。</p>
+<blockquote>
 <p>But it’s actually really nice to be able to focus on a specific layer. Maybe you have several places of code where you send an email and you don’t want to know how an email is-- I don’t know how emails are being sent. It’s a mystery to me that they even arrive. But I can call a function called send email and well, it works most of the times. And it’s really nice to be able to focus on it. And of course another benefit is just being able to reuse code written by you or other people and not remember how it actually works.</p>
+</blockquote>
 <p>假如你的代码里有几处地方是要发送电子邮件的，但你不知道电子邮件的发送原理，好在，你只需要调用一个能发送电子邮件的函数，就完事了（这样一来，你只需要专注于你的业务——译注）。抽象的另一个好处在于同样的功能能被你自己或者其他人重用，哪怕使用者并不知道/记得其中的原理。</p>
+<blockquote>
 <p>So if we need something, exactly the same thing that we already use from different places, it’s very nice to be able to reuse it. So that’s a benefit of abstraction. And abstraction also helps us avoid some some bugs. So in the example where we have a bug, maybe we copy pasted something. And that’s an argument against copy paste, is we copy pasted something and then we found the bug in one version and we fix it, but then the other version stays broken because we forgot about the copy paste. So that’s a good argument for why you’d want to extract something and pull it away.</p>
+</blockquote>
 <p>所以，假如我们要在代码的不同地方复用同一个功能，抽象是很有用的。抽象也能帮我们减少一些 Bug，假如我们一味复制粘贴，那么当我们修复一个地方的 Bug 时，其他地方则还留存着同样的 Bug。这就是我们有时要“抽出一些的东西”的正面理由。</p>
+<blockquote>
 <p>But when we talk about benefits we should also talk about costs. And so one of these costs is that abstraction creates accidental coupling. And what I mean by that is, so we have these two modules using some abstraction, and then we realize that one of them has a bug. And we have to fix it in the abstraction because that’s literally where the code is. But now it’s your responsibility to consider all of the other call sites of this abstraction and whether you might have actually introduced a fix in another, introduced the bug in another part of the code base. So that’s one cost. Maybe you can live with it. Most of us live with it. But it’s a real cost.</p>
+</blockquote>
 <p>但这么做也是有代价，其中之一是，抽象意外地导致了耦合。假如我们有两个模块依赖同一个抽象，当我们发现其中一个模块的功能有问题——哦，原来是它依赖的抽象有问题——进去修好了，那么，现在你就有责任回归这个抽象的所有调用方，确保这次的修复万无一失。或许你对此已习以为常，但是，这确实是一个代价。</p>
+<blockquote>
 <p>And I think an even more dangerous cost is the extra indirection an abstraction can create. So what I mean by that is that the promise was that I would just be able to focus on this specific layer in my code and not actually care about all the layers. Is that really what happens? I’m sure most of you probably had this bug where you started one layer, oh, it goes here. And it’s like, well, actually, no. You need to understand this layer and this other layer because the bug, it goes across all of those layers. And we have a very limited stack in our heads.</p>
+</blockquote>
 <p>另一个代价更为危险：抽象会带来 extra indirection（不好翻译，保留原文——译注）。这里的意思是，抽象通常许诺我们说，我们只要关心我们的这一层次就好，其它层次都可以藏在抽象后面。但这是真的吗？我确信你们都遇到过这种情况：你在某一层发现了 Bug，再仔细一查，哦，原来根源在另外一层。也就是说这个 Bug 使得你不得不理解当前层级以及另一层级，搞不好最后你得搞明白所有层级。然而我们的大脑容量说到底是有限的。</p>
+<blockquote>
 <p>And so what happens is you just get a stack will fall, which is probably why the site was coded that way. And so what I see happen a lot is that we try so hard to avoid the spaghetti code that we create this lasagna code where there are so many layers that you don’t know what’s going on anymore at all. So that’s extra indirection. And all of them wouldn’t be that bad if they didn’t entrench themselves.</p>
+</blockquote>
 <p>我常见到的一种情况是，我们为避免意大利面条式的代码引入了千层饼式的代码：代码库里的层级多到我们根本搞不清怎么回事了。这就是 extra indirection。当然，如果他们比较好改动，那也不算糟糕透顶。</p>
+<blockquote>
 <p>So abstraction also creates inertia in your code base. And that’s a social factor more than technical. What I’ve seen happen many times is you start with an abstraction that looks really promising and makes sense to you. And then with time it gets more and more complex. But nobody really has time to refactor or unwind this abstraction, especially if you’re a new person on the team. You might think that it would be easier to copy and paste it, but first you don’t really know how to do that anymore because you’re not familiar with that code. And second you don’t want to be the person who just suggests worst practices. Who wants to be the person who says, let’s use copy paste here? How long do you think you’re going to be on that team?</p>
+</blockquote>
 <p>综上，抽象总是在你的代码库里制造惰性。与其说这是技术因素，不如说是社会因素（我们总是不太想动别人写好的抽象——译注）。我常见到的一种情况是，你弄了个抽象，一开始它很好用，然而随着时间推移它越来越复杂，尤其对于新入团队的人来说。新人或许想直接复制粘贴，但那代码复杂得连复制粘贴都不知道从哪里开始，另外新人出于自尊也不想成为在代码库里复制粘贴的带恶人。</p>
+<blockquote>
 <p>So you just accept the reality for what it is and keep doing it and hope that this code is not going to be your responsibility anymore soon. And the problem is that even if your team actually agrees that the abstraction is bad and it should be inlined, it might just be too late. So what might happen is that you’re familiar with just this concrete usage and you know how to test it. If you unwind the abstraction, you can understand how to verify that change didn’t break anything. But maybe there is another team who uses it here and another team who uses it there, and maybe this team has been reorged so there is no team that maintains that code, and you don’t really know how to test it anymore. So you just can’t make that change even if you want to.</p>
+</blockquote>
 <p>最终，新人屈服于现实开始复制粘贴。问题在于，即使团队开始意识到应该内联抽象，也已经太迟了。就算你们你知道这个抽象的用处和测试方法，能确保在取消这个抽象后一切功能正常，但如果别的团队也在用这玩意儿，该怎么办？或者说你们的团队重组了，懂得这个抽象怎么测试的人已经不在了，你还敢动这个抽象吗？</p>
+<blockquote>
 <p>So I really like this tweet. It’s a bit hard to read. Easy-to-replace systems tend to get replaced with hard-to-replace systems, which is kind of like the Peters Principle. There’s this Peter’s Principle that everybody in the organization continuous raising until they become incompetent and then they can’t raise anymore. And it’s similar that if something is easy to replace, it will probably get replaced. And then at some point you hit the limit where it’s just a mess and nobody understands how it works.</p>
+</blockquote>
 <p>我喜欢这条有点拗口的推特：“一个易于被替代的系统，总是倾向于被难以替代的系统替代掉。”这有点像彼得斯定律：组织里的每个人都会不断升迁，直到他们变得不称职而无法再升迁为止。类似地，一个容易被替换的东西，很大概率会被替换，直到换上来的东西属实一团糟以至于没人懂里面的原理为止。</p>
+<blockquote>
 <p>So I’m not saying that you shouldn’t create abstractions. That would be a very two-dimensional or one-dimensional takeaway. I’m saying that there are things that, we’re going to make mistakes. So how can we actually try to mitigate or reduce the risks from those mistakes? And so one of them that I learned on the React team in particular is to test code that has concrete business value. So what I mean by that is, say we have this a little bit wonky abstraction, but we finally got some time to write some proper tests, because we fixed some bugs and we have a gap before the new half of the year starts and we can fix some things.</p>
+</blockquote>
 <p>再次强调，我不是说我们不应该编写抽象，那就太独断论了。我是说（在写抽象的过程中——译注）我们很可能会犯错。那么我们如何转移或是减少此类错误带来的风险呢？我在 React 团队里学到的一件事是，测试具有具体业务价值的代码（而不是抽象的模块——译注）。而对于那些似乎不太靠谱的抽象，我们只在它经历了几次 bugfix 之后，趁着新的半年度开始前，才给它加上一些测试。</p>
+<blockquote>
 <p>So we want to write some unit test coverage for that part. And intuitively, where I would put unit test is, well, here’s the abstraction where the complex code lies. So let’s put unit test to cover that code. And that’s actually a bad idea in my opinion, because what happens is that if later you decide that this abstraction was bad and you try to turn it into copy paste, well, guess what happens through your tests? They all fail. And now you’re like, well, I guess I’ll have to revert that because I don’t want to rewrite all my tests. And I don’t want to be the person who suggested to decrease the code coverage. So you don’t do that.</p>
+</blockquote>
 <p>假如我们想给代码库加点单元测试，从直觉上来说，应当给内部代码复杂的抽象加单测。实际上，在我看来这是不对的，因为假如之后你认定这个抽象不太好，并决定改用复制粘贴，那你的单测就作废了，一想到这，或许出于保持测试覆盖率的动机，你就想保持现状。</p>
+<blockquote>
 <p>But if you have a time machine you can go back and you can write your unit tests or integration tests or whatever you want to call them, fad of the day tests, against the code that we actually care about, that this code works against concrete features. And then there’s this test that don’t care about your abstraction. So you can inline the abstraction back. You can create five layers of abstraction. The test will tell you whether this code works. So actually they will guide you to refactor it because they can tell you that your refactoring is in fact a correct one. So testing concrete code is a good strategy.</p>
+</blockquote>
 <p>但如果你有时光机，你就能回到过去，让自己只对着真正值得关心的、有具体业务功能的代码写单元测试/集成测试/时下流行的这种那种测试。这样的话，你的测试就不涉及到那些抽象，内联抽象时也就没有顾虑了。哪怕你弄了个五层抽象，在重构它们时，这些测试也能确保万事大吉。综上，“只测试具体的代码”是个好策略。</p>
+<blockquote>
 <p>Another one is just to restrain yourself. You see this full request. You get this itch, like, this looks duplicate. And you’re like, no, take a walk. Because if you have this, you might have a high school crush and they are really into the same obscure bands on Last.fm that you’re into. That doesn’t mean that you have a lot in common and they’re going to be a good life partner. So maybe you shouldn’t do the same to the code. Just because the structure of these two snippets looks similar, it might just mean that you don’t really understand the problem yet. And give it some time to actually show that this is the same problem and not just accidentally similar code.</p>
+</blockquote>
 <p>另一个要点在于约束你自己。当你看到一个需求时，你心里可能痒痒的：啊，这和之前的某个功能很类似，让我们抽出来！此时，赶紧停下来，去散个步冷静下。因为这种感觉很可能类似你的高中恋爱，你和 TA 仅仅是喜欢同一个摇滚乐队，就好像是天造地设的终身伴侣一样！对你的代码，可别犯下这种错误。两段代码结构看着相似，说明不了什么，很可能只是因为你没发现问题所在罢了。让时间来验证这两段代码是否真的解决了同一个问题，而非只是偶然相似罢了。</p>
+<blockquote>
 <p>And finally, I think it’s just important that if that happens, if you make a mistake, it should be part of your team culture to be OK with, this abstraction is bad. We need to get rid of it. You should not only add abstraction, but you should also delete them as part of your healthy development process. So that means that it should be OK to leave a comment like this and say, hey, this is getting out of control. Let’s spend some time to copy and paste this and later we’ll figure out what to do with it.</p>
+</blockquote>
 <p>最后，我发现还有一点很重要：你的团队的文化应当允许犯错，能大方地说，哦，这个抽象不咋地，还是弄掉吧。在抽象方面，你们要做加法，更要做减法，这才称得上健全。具体来说，代码库里应当有诸如“嘿，这个抽象把事情弄复杂了。我们先复制粘贴，之后再看看能不能改”之类的评论。</p>
+<blockquote>
 <p>But there is also a technical component to this. So if your dependency tree looks like this, it might actually be really challenging to inline anything because you’re like, well, I have this thing I want to inline but, OK, I can copy it, but there’s some mutable shared state that is now being duplicated. And I need to figure out how to rewire all of those dependencies together. And it might not even be feasible. So you just give up. And I don’t really have a good solution for this. What I’ve noticed is that, for some code, you can’t really avoid it. For example, in the source code of React itself, we do have a problem like this. Because we try to mutate things for you so you don’t have to mutate them. So we have all this interdependencies between modules that can be a bit difficult to think about.</p>
+</blockquote>
 <p>这里面还有一些技术因素在作梗。如果你项目的依赖图长这样：
 <img src="/_resources/50ec8d82205042bcb782d387b04b8d4a.png" /></p>
 <p>那内联任何东西都是非常困难，甚至无法实现的，最后只能作罢。对于这种情况，我也没啥办法，只能说，确实存在某些场景（例如 React 内部的实现）是无法避免这种情况的。</p>
+<blockquote>
 <p>But then what’s cool about React, in my opinion, is that it lets you write apps with dependency trees that are more like this. So you have a button component that’s used from form, and that form is used from app. And so on like this. And it follows this tree shape. And we have these constraints for data flows only in one direction. So you don’t really expect things to get weird circular. And what it means is that you’re going to make mistakes, you’re going to create bad abstractions, but does your technology make it easier for you to get rid of them?</p>
+</blockquote>
 <p>React 很棒的一点在于，React 项目牺牲自己，只为成全广大用户的项目不出现上图的那种情况。React 是单向数据流的，因此出现循环引用的概率不大。重点在于，你会犯错，会弄出糟糕的抽象，但你的技术方案是否让你更容易紧急回避它们？</p>
+<blockquote>
 <p>Because I think with React components and some other constrained forms of dependency, like management, you have this nice property where it’s usually a matter of copy and pasting things in order to inline them. And so even if you make a bad decision, you can actually undo it before it gets too late. So this is something to consider in both social and technology part of it. So don’t repeat yourself. DRY is just one of those principles that are probably pretty good ideas.</p>
+</blockquote>
 <p>我认为，React 组件以及 React 施加于你的某些限制，为你的项目带来一个很好的特性：复制粘贴通常行得通。所以即使你弄了个坏抽象，也能在事态恶化之前挽回。</p>
 <p>总之，这个问题既涉及到技术因素，也涉及到社会因素。DRY 原则，和其他许多理论一样，是一种“在大部分情况下管用”（也就是说，某些情况下不管用——译注）的理论。</p>
+<blockquote>
 <p>And there are many good ideas that you might hear about as a developer and entering this industry. Or even as somebody who’s been doing it for 15 years and then stepping outside for a few months. And we see a lot of evangelism around those things. And that is fine. But I think it’s important that when we try to explain what those things do or why they’re a good idea, we should always explain what exactly are you trading away and which things led us to that to that principle or idea. And what is the expiration date for those problems? Because sometimes there is some context that is assumed and that context actually changes but you don’t realize that. And so the next generation needs to understand what exactly was traded off and why.</p>
+</blockquote>
 <p>除此之外，你应该还从业界听过很多好观点，其中有些甚至甚至已经实践了十几年，拥有许多传道士。这都 ok，但我认为最重要的是我们必须解释清楚到底好在哪儿，坏在哪儿，其中有哪些权衡，以及，这些观点所解决的问题如今是否还存在？其中有些观点的语境早已过期，而后来者却没意识到这点。</p>
+<blockquote>
 <p>And so my challenge for you is to pick some best practices and anti-patterns that you strongly believe are true, whether from your experience or because somebody told you or because you came up with them, and really try to break it down and deconstruct why you believe these things and what exactly is being traded away. And if you found this talk interesting, you might like these other talks. So All the Little Things by Sandi Metz is an amazing talk that goes into way more detail on these ideas and many others. Minimal API Surface Area is a talk by my colleague, Sebastian, who I learn all of this stuff from. And On the Spectrum of Abstraction is an interesting talk by Cheng Lou, who goes into how abstractions help us trade the power and expressiveness for constraints and how those constraints can actually limit us, but let us do things we wouldn’t be able to do otherwise. It’s a good talk. And thank you for having me. That’s all I have.</p>
+</blockquote>
 <p>我在这里向大家提出个挑战：找一些你深信不疑的所谓的最佳实践或是反模式——无论是来自你的实践经验还是听别人说的——然后试着违反它们，看看实验结果是否会摧毁你曾深信的东西，让你弄明白其中的取舍。如果你对这个话题有兴趣，也能看看这些材料：</p>
 <ul>
 <li>Sandi Metz 的一些讨论</li>
