@@ -4,9 +4,69 @@
         <title></title>
         <link>undefined</link>
         <description>undefined</description>
-        <lastBuildDate>Fri, 05 Nov 2021 08:16:44 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 27 Dec 2021 10:52:31 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Joplin Pages Publisher</generator>
+        <item>
+            <title><![CDATA[控制流抽象]]></title>
+            <guid>ab3b49dd35024bbd8b77c60f420c1e93</guid>
+            <pubDate>Tue, 14 Dec 2021 12:45:03 GMT</pubDate>
+            <content:encoded><![CDATA[<h2 id="控制流抽象与异步时代">控制流抽象与异步时代</h2>
+<p>自结构化编程语言流行以来，编程语言仅允许程序员以<a>有限的几种方式调度控制流</a>。然而，控制流作为编程语言中的核心概念，对控制流进行抽象以更好地进行调度，是有必要的。</p>
+<h3 id="异步编程">异步编程</h3>
+<p><a title="https://www.zhihu.com/question/389262477/answer/1567044701" href="https://www.zhihu.com/question/389262477/answer/1567044701">随着互联网应用的发展</a>，应用层越来越多地使用异步调用（指调用方不等待返回值的调用。常见于 I/O 中）。其实对于软件的业务逻辑来说，本不存在“异步”的语义，<strong>程序员只是<a title="https://www.zhihu.com/question/46499998/answer/101672660" href="https://www.zhihu.com/question/46499998/answer/101672660">出于实现上的好处</a>（尤其是其对并发的支持）而不得不使用它</strong>。</p>
+<p>异步的大量使用，使得程序员们需要发明抽象来辅助进行异步编程（<a title="https://www.zhihu.com/question/23886967/answer/145214574" href="https://www.zhihu.com/question/23886967/answer/145214574">为什么？</a>）。这条路上有两个路线：</p>
+<ul>
+<li>对异步产生的值进行抽象（例如<a>Promise</a>、<a>observable</a>等）</li>
+<li><strong>对控制流本身进行抽象</strong></li>
+</ul>
+<p>这两条路线并不互斥，甚至有所重叠。本文将着重介绍第二条。</p>
+<h3 id="continuation">continuation</h3>
+<p>continuation 是一种语言级别的抽象，表示“程序的剩余部分”。参见以下两个小节：</p>
+<ul>
+<li><a>第六章：控制流#继续continuation</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/94611888">Continuation 在 JS 中的应用#continuation</a></li>
+</ul>
+<p>基于这一抽象，陆续发展出很多调度控制流的方法</p>
+<h2 id="控制流抽象">控制流抽象</h2>
+<h3 id="cps调度控制流的原始尝试">CPS：调度控制流的原始尝试</h3>
+<p>早在 70 年代，一些程序员开始使用一种称为 CPS 的编程模式来优化编译器。</p>
+<p>关于 CPS 的很好的介绍，可以参考 <a href="https://zhuanlan.zhihu.com/p/94611888">这一小节</a> 。此处仅给出结论：<strong>CPS 由于不适合人类编写和阅读，因此不是一种调度控制流的合适方法</strong>（但可以作为编译产物存在）。 但尽管如此，CPS 的幽灵仍然游荡在现代异步编程中，体现为 callback。</p>
+<p>程序员们讨厌编写 callback（当然也有<a title="https://news.ycombinator.com/item?id=1549168" href="https://news.ycombinator.com/item?id=1549168">异议</a>），因为这里存在一处矛盾：<strong>业务逻辑和程序员的思路都是线性的，而 callback 却呈碎片状散落在各处</strong>。此外，还有<a title="https://www.zhihu.com/question/32218874/answer/216801915" href="https://www.zhihu.com/question/32218874/answer/216801915">种种不便</a>。</p>
+<p>因此很自然地，程序员们需要一种更高级的语言级别的抽象——让语言来迎合人，而让解释器、编译器去处理机器的需要。</p>
+<h3 id="callcc">callcc</h3>
+<p>callcc，全称 call with current continuation，是<a title="https://www.zhihu.com/question/19585576/answer/19727369" href="https://www.zhihu.com/question/19585576/answer/19727369">功能集最小的</a>（这意味着<strong>一切关于控制流的抽象，都可以被当作是对 callcc 的某种封装</strong>）、用于调度控制流的语言抽象。相比 CPS，是一种对 continuatin 的高级应用。</p>
+<p>可以将 callcc 理解为一种基于 continuation 的<a href="https://zhuanlan.zhihu.com/p/94611888">高级版的 goto</a>（而 goto 是简单地基于源码位置的），可谓万能而危险，因而难以广泛应用（参考 goto，在结构化编程语言中，基本上是一个被封印起来的语言特性）。以下两篇文章给出了很好的示例：</p>
+<ul>
+<li><a title="https://www.zhihu.com/question/21954238/answer/1829986581" href="https://www.zhihu.com/question/21954238/answer/1829986581">如何解释 Lisp 中 call/cc 的概念？ - 叶芝秋的回答 - 知乎</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/94611888">Continuation 在 JS 中的应用#callcc</a></li>
+</ul>
+<h3 id="协程coroutine">协程（coroutine）</h3>
+<p>协程功能允许程序员（借助任意个协程，所谓的“用户态线程”）对一个控制流进行灵活的调度（这有别于线程机制，即让程序员开启数个同时活跃的控制流）。</p>
+<p>协程是这样一种语言级抽象（在大部分语言中体现为一种特殊的函数）：其可以“让出”（用某种关键字，常见的有<code>yield</code>或者<code>await</code>）控制流，之后在合适的时机可以由程序员手动（<strong>无调度器</strong>，例如 JS 中的 generator，C# / Lua 中的 coroutine）或runtime 自动（<strong>有调度器</strong>，例如 C# / JS / Python 中的 async-await，Go 中的 goroutine）恢复控制流。“除非让出执行权，否则控制流不会被打断”，便是“协”的含义。</p>
+<p>具体可见<a>第八章：子程序和控制抽象#协程</a>一节。</p>
+<p>协程对于异步调用来说用处很大：当控制流来到异步调用处时，程序员可以利用协程机制，让控制流去往其它地方（而不是停滞不前等待调用返回）；待异步调用返回后，再让控制流回到此处。</p>
+<p><strong>就主流实现而言，协程可分为两类：</strong></p>
+<h4 id="无栈协程">无栈协程</h4>
+<p>无栈（stackless）协程，顾名思义，即对于一个协程，不提供一个专门的栈空间供它记录环境，而是把<a href="https://journal.stuffwithstuff.com/2015/02/01/what-color-is-your-function/">所有信息都记录到堆里</a>。此类协程的实现很简单，可以简单到仅仅是<a href="https://journal.stuffwithstuff.com/2015/02/01/what-color-is-your-function/">编译器提供的 CPS /状态机语法糖</a>（在<a title="https://www.zhihu.com/question/305443189/answer/551716136" href="https://www.zhihu.com/question/305443189/answer/551716136"> runtime 里实现</a>当然也行）。</p>
+<p>无栈协程的一个主要缺陷是<a href="https://journal.stuffwithstuff.com/2015/02/01/what-color-is-your-function/">染色问题</a>。</p>
+<h4 id="有栈协程">有栈协程</h4>
+<p>有栈（stackful）协程，有时又叫纤程（Fiber。这个术语也<a href="https://zhuanlan.zhihu.com/p/94611888">被 React 借用了</a>），其特点是：<a href="https://journal.stuffwithstuff.com/2015/02/01/what-color-is-your-function/">每个有栈协程都有一个独立的调用栈，且有栈协程间能互相切换</a>。这是靠“将每个有栈协程都放在一个独立线程中”来实现的。</p>
+<p>对 Go 而言，这意味着使用协程（体现为 goroutine）时，可能存在着多个同时活跃的控制流；而对同为使用有栈协程的 Lua 而言，当一个协程内有控制流的时候，其余协程的控制流都处于暂停状态。</p>
+<p>关于无栈协程和有栈协程在实现上的详细对比，可见<a href="https://www.zhihu.com/question/65647171/answer/233495694">此文</a>。</p>
+<h4 id="其它">其它</h4>
+<p>此外，还有<a title="https://www.zhihu.com/question/23955356/answer/732629313" href="https://www.zhihu.com/question/23955356/answer/732629313">stack-twine、stackcopy 等方式实现的协程</a>，但由于种种负面原因，均属于非主流实现，此处不一一介绍。</p>
+<p>此外，<a title="https://www.zhihu.com/question/502314022/answer/2247370966" href="https://www.zhihu.com/question/502314022/answer/2247370966">这篇文章</a>对比了不同语言中的协程实现。</p>
+<h3 id="代数效应algebraic-effects">代数效应（Algebraic Effects）</h3>
+<p><strong>代数效应是这么一种语言特性：其相当于语言层面的依赖注入</strong>。目前只有极少的编程语言实现了这一特性。其功能是：当控制流来到值的注入点的时候，会立刻前往位于调用栈下方某处的、定义了该值的求值过程的地方。当求值完成后，控制流再返回注入点。</p>
+<blockquote>
+<p>（和协程对比）从程序运行本质上差不多。也和continuation passing style差不多。都是把当前运行环境中下一步要执行的代码(current continuation)，给保存起来，让外部传入东西继续执行。</p>
+<p>再说区别，一般而言coroutine是one-shot的。比如generaor函数运行了next以后，就再也回不去了</p>
+<p>而algebraic effect更灵活，是可以多次重入的。</p>
+<p><a title="https://www.zhihu.com/question/506309867/answer/2273058569" href="https://www.zhihu.com/question/506309867/answer/2273058569">https://www.zhihu.com/question/506309867/answer/2273058569</a></p>
+</blockquote>
+]]></content:encoded>
+        </item>
         <item>
             <title><![CDATA[The Wet Codebase 讲座翻译]]></title>
             <guid>22674ba34aff4a16b3317f106503b43b</guid>
@@ -1360,175 +1420,6 @@ k(<span class="hljs-symbol">X</span>) :- f(<span class="hljs-symbol">X</span>),g
 <p>以 <a>Rxjs</a> 为例。Rxjs 中流被抽象为 Observable， 这是比 Node.js 中的 Stream 更抽象的事物。<a title="https://zhuanlan.zhihu.com/p/20241182" href="https://zhuanlan.zhihu.com/p/20241182">二者有何不同？Node 的 Stream 是和 Unix 哲学紧密契合的概念，非常好用，很简单，容易使用，这是它的优点；但它局限在 IO，通用性不如 Observable，而且提供的操作也仅仅限于 pipe 等最基础的操作，虽然有 event-stream 这样的第三方库加入了大量的实用操作（如map，join，split，merge等），但其功能丰富程度远不如Observable，为 composition 所做的努力也远不如 Observable。</a></p>
 <p>Observable <strong>更适用于声明式编程。而 Node Stream 更应该被理解为一种对产生值、使用值的过程的过程式封装</strong>（证据是后者暴露了大量能够干涉数据生产过程的 API）。</p>
 <p>通过在“流”这一抽象层次操作数据，程序员可以避免基于底层抽象维护程序状态，因为状态已经由历时的事件来表示了（甚至可以把程序视为“无状态”的。因为事件具有不可变的性质）。并且将流的生产逻辑（处理输入）和消费逻辑（改变内存中的数据/进行输出）解耦，也利于模块化。这种范式契合很多场景，例如 UI 编程。将用户在界面上的反复操作看作一个流，并基于它进行各种流处理、流传递操作，并得到一个输出流供其它内外组件消费（例如渲染界面）。</p>
-]]></content:encoded>
-        </item>
-        <item>
-            <title><![CDATA[Digest of Software Architecture Patterns]]></title>
-            <guid>0cb354b76b29423a93e69b2782188971</guid>
-            <pubDate>Sun, 28 Oct 2018 15:07:39 GMT</pubDate>
-            <content:encoded><![CDATA[<p>Architecture patterns help define the basic characteristics and behavior of an application. Different architecture patterns make different senses. To make the correct decision, developers should know about the characteristics, strengths, and weaknesses of each architecture pattern.</p>
-<h1 id="layered-architecture">Layered Architecture</h1>
-<h2 id="description">Description</h2>
-<p>Layered architecture is the de facto standard for most Java EE applications and therefore is widely known by most developers, and has become a natural choice for most business application development.</p>
-<p>Components within the layered architecture pattern are organized into horizontal layers, each layer performing a specific role within the application. For example, we can divide all source code into four <strong>layers</strong>:</p>
-<ul>
-<li>presentation layer</li>
-<li>business layer</li>
-<li>persistence layer</li>
-<li>database layer</li>
-</ul>
-<p>More or less layers are acceptable, depending on the scale of your application. In fact there are various layering theories, but they share the same principles.</p>
-<p>Furthermore, codes in each layer can be divided into different <strong>components</strong>. Components in each layer should have a <strong>separated concern</strong>（分离的关注点）. For example, codes in components of presentation layer must not handle with database operation (such as using SQL statement).</p>
-<p>The feature of separation of concerns among components brings into <strong>layers of isolation</strong>, which means high changeability or even replaceability of each layers, for they are independent of the other layers. And we call these layers <strong>closed</strong> because every layer prevent its upper layer from knowing anything about its lower layers.</p>
-<p>For some reasons, sometimes it makes sense to <strong>make a layer open</strong>. Opening a layer means that make a layer “translucent”, otherwise a upper layer of the open layer may have knowledge of the lower layer of the open layer. Usually an open layer is a <strong>service layer</strong>, which provide some common supprots for its upper layer. It’s necessary to document which layers are open and why.
-<img src="https://image-1257651452.cos.ap-chengdu.myqcloud.com/20181024204849.png" /></p>
-<h2 id="considerations">Considerations</h2>
-<p>Here are two things to consider when using layered architecture:</p>
-<ul>
-<li>sinkhole anti-pattern: This anti-pattern describes the situation where a call request flows through multiple layers of the architecture as simple pass-through processing with little or no logic performed within each layer. When too much call requests are perceived to fall into this anti-pattern, opening some layers is a nice solution</li>
-<li>A application of layered architecture pattern tends to lend itself toward monolithic applications</li>
-</ul>
-<h2 id="rating">Rating</h2>
-<ul>
-<li>Overall agility: low. Because of the monolithic nature of most implementations as well as the tight coupling of components usually found with this pattern</li>
-<li>Ease of deployment: low. This pattern is not designed specially for a continuous delivery pipeline</li>
-<li>Testability: high. Any layer can be mocked in a testing</li>
-<li>Performance: low. This pattern is not designed specially for high-performance</li>
-<li>Scalability: low. For its trend toward tightly coupled and monolithic implementations</li>
-<li>Ease of development: High. For it’s a general-purpose  and well-known pattern. And according to Conway’s law, layered architecture correspond with the typical business company</li>
-</ul>
-<h1 id="event-driven-architecture">Event-Driven Architecture</h1>
-<p>The event-driven architecture is made up of highly decoupled, single-purpose event processing components that asynchronously receive and process events. This architecture consists of two main topologies: mediator topology and broker topology. Characteristics and implementation strategies differ between these two topologies.</p>
-<h2 id="description-2">Description</h2>
-<p>A system of event-driven architecture takes every input as a <strong>event</strong>, and it’ll be dispatched to a certain component somehow to be processed.</p>
-<h3 id="mediator-topology">Mediator topology</h3>
-<p>If you’re dealing with events that have multiple steps and require some level of orchestration to process the event, here is mediator topology.</p>
-<p>There are four parts in this type of architecture:</p>
-<ul>
-<li>event queues</li>
-<li>an event mediator</li>
-<li>event channels</li>
-<li>event processors</li>
-</ul>
-<p>And this is how they work:</p>
-<ol>
-<li>Client send a request called <strong>initial event</strong> to an event queue</li>
-<li>The event mediator, which only knows of the steps required to process initial event, receives the initial event and generate additional asynchronous events called <strong>processing events</strong> for event channels</li>
-<li>Event processors which listen on the event channels receive events from event mediator and execute specific business logic to process the event. Each processor can complete its tasks without relying on other processors.
-<img src="https://image-1257651452.cos.ap-chengdu.myqcloud.com/20181025221809.png" /></li>
-</ol>
-<h3 id="broker-topology">Broker topology</h3>
-<p>If your event processing logic is simple enough so that you don’t want or need a central event mediator to perform orchestration, you can choose this broker topology.</p>
-<p>There are two parts in this type of architecture:</p>
-<ul>
-<li>A broker, which contains some event channels</li>
-<li>Event processors</li>
-</ul>
-<p>And this is how they work:</p>
-<ol>
-<li>An initial event created by a client will be dispatched to a event channel of the broker</li>
-<li>Each event processor is responsible for processing an event which it concerns, and may publish a new event for other processors to a event channel hold by the broker after it complete its task</li>
-</ol>
-<p><img src="https://image-1257651452.cos.ap-chengdu.myqcloud.com/20181025221910.png" /></p>
-<h2 id="considerations-2">Considerations</h2>
-<ul>
-<li>Make sure to make a good design of granularity of event processors. Remember that an undivided transaction must not be processed by separate processors</li>
-<li>Use a  standard data format (like JSON ) in the communication among event processors, and establish a contract versioning policy right from the start</li>
-</ul>
-<h2 id="rating-2">Rating</h2>
-<ul>
-<li>Overall agility: high.  Event-processor components are single-purpose and completely decoupled from other event processors</li>
-<li>Ease of deployment: high. For its decoupled nature</li>
-<li>Testability: low. Though individual unit testing is not overly difficult, it does require some sort of specialized testing client or testing tool to generate events. Testing is also complicated by the asynchronous nature of this pattern</li>
-<li>Performance: high.  Parallel asynchronous operations rules!</li>
-<li>Scalability: high. For its decoupled nature</li>
-<li>Ease of development: low.  For its asynchronous nature</li>
-</ul>
-<h1 id="microkernel-architecture">Microkernel Architecture</h1>
-<p>Softwares based on microkernel architecture are easy to append additional features as plugins.</p>
-<h2 id="description-3">Description</h2>
-<p>This architecture consists of two types of components:</p>
-<ul>
-<li>a <strong>core system</strong> : contains only the minimal functionlity required to make the system operational</li>
-<li><strong>plug-in modules</strong>: stand-alone, independent components that contain specialized processing, additional features, and custom code. Each module is independent of any ohter module generally, so it’s important to design a common way of communication among plug-ins and with core system</li>
-</ul>
-<p><img src="https://image-1257651452.cos.ap-chengdu.myqcloud.com/20181027165039.png" /></p>
-<h2 id="considerations-3">Considerations</h2>
-<p>This architecture can be embedded or used as part of another architecture. And it’s the first choice when developing a software which will be adjusted frequently to respond to users’ requirement.</p>
-<h2 id="rating-3">Rating</h2>
-<ul>
-<li>Overall agility: high.  Plugin-in modules can be developed quickly and separately</li>
-<li>Ease of deployment: high, if plug-ins modules can be loaded dynamically</li>
-<li>Testability: high. Plug-in modules can be tested in isolation and can be easily mocked by the core system to demonstrate or prototype a particular feature with little or no change to the core system</li>
-<li>Performance: high, when discard plug-in modules that you don’t really need</li>
-<li>Scalability: low. Scalability are provied in plug-ins’ level rather than core system level</li>
-<li>Ease of development: low.  The microkernel architecture requires thoughtful design and contract governance, making it rather complex to implement</li>
-</ul>
-<h1 id="microservices-architecture">Microservices Architecture</h1>
-<p>Microservices architecture gains its big siginifiance in software industry. Theories about this architecture are still evolving, but basically it’s a  viable alternative to monolithic applications and service-oriented architectures.</p>
-<h2 id="description-4">Description</h2>
-<p>There are several common core concepts that apply to the general architecture pattern.</p>
-<ul>
-<li><strong>service component</strong>: Service components contain one or more modules that represent either a single-purpose function  or an independent portion of a large business application. Designing the right level of service component granularity is one of the biggest challenges within a microservices architecture</li>
-<li><strong>separately deployed units</strong>: Every service component can be deployed as separate unit</li>
-<li><strong>distributed</strong>: All the components within the architecture are fully decoupled from one other and accessed through some sort of remote access protocol (like REST)</li>
-</ul>
-<p>There are two main sources of motivation to this architecture: one is the challenge of the continuous delivery for  monolithic applications, another is the practice of service-oriented architecture pattern (SOA, an architecture for huge scale applications).</p>
-<h3 id="api-rest-based-topology">API REST-based topology</h3>
-<p>The API REST-based topology is useful for websites that expose small, self-contained individual services through some sort of API.  In this topology, these fine-grained service components are typically accessed using a REST-based interface implemented through a separately deployed web-based API layer.</p>
-<p><img src="https://image-1257651452.cos.ap-chengdu.myqcloud.com/20181027211251.png" /></p>
-<p>###Application REST-based topology</p>
-<p>The application REST-based topology differs from the API RESTbased approach in that client requests are received through traditional web-based or fat-client business application screens rather than through a simple API layer.</p>
-<p>The service components in this topology differ from those in the API-REST-based topology in that these service components tend to be larger, more coarse-grained, and represent a small portion of the overall business application rather than fine-grained, singleaction services. This topology is common for small to medium-sized business applications that have a relatively low degree of complexity.</p>
-<p><img src="https://image-1257651452.cos.ap-chengdu.myqcloud.com/20181027211647.png" /></p>
-<h3 id="centralized-messaging-topology">Centralized messaging topology</h3>
-<p>The centralized messaging topology is typically found in larger business applications or applications requiring more sophisticated control over the transport layer between the user interface and the service components. The benefits of this topology over the simple REST-based topology discussed previously are advanced queuing mechanisms, asynchronous messaging, monitoring, error handling, and better overall load balancing and scalability.</p>
-<p>The single point of failure and architectural bottleneck issues usually associated with a centralized broker are addressed through broker clustering and broker federation (splitting a single broker instance into multiple broker instances to divide the message throughput load based on functional areas of the system).</p>
-<p><img src="https://image-1257651452.cos.ap-chengdu.myqcloud.com/20181228023859.png" /></p>
-<h2 id="considerations-4">Considerations</h2>
-<ul>
-<li>Think carefully before determining the correct level of granularity for the service components. Too fine-grained will lead to service orchestration requirements while too coarse-grained makes it no more “microservice”</li>
-<li>Use shared databases sometimes to reduce the couplings between components</li>
-<li>Functionality reusing may be a problem. Sometimes you have to reuse by copy codes</li>
-</ul>
-<h2 id="rating-4">Rating</h2>
-<ul>
-<li>Overall agility: high.  Born for it</li>
-<li>Ease of deployment: high. Born for it</li>
-<li>Testability: high, due to the separation and isolation of business functionality</li>
-<li>Performance: low, due to the distributed nature of the microservices architecture pattern</li>
-<li>Scalability: high.</li>
-<li>Ease of development: high</li>
-</ul>
-<h1 id="space-based-architecture">Space-Based Architecture</h1>
-<p>The space-based pattern (also sometimes referred to as the cloud architecture pattern) minimizes the factors that limit application scaling. Most applications that fit into this pattern are standard websites that receive a request from a browser and perform some sort of action.</p>
-<h2 id="description-5">Description</h2>
-<p>There are two primary components within this architecture pattern:</p>
-<ul>
-<li>a processing unit: Typically contains the application modules (as well as backend logic), along with an in-memory data grid and an optional asynchronous persistent store for failover. Also contains a replication engine that is used by the virtualized middleware to replicate data changes made by one processing unit to other active processing units</li>
-<li>virtualized middleware: Handles housekeeping and communications. It contains components that control various aspects of data synchronization and request handling. Included in the virtualized middleware are the messaging grid, data grid, processing grid, and deployment manager. The virtualized middleware is essentially the controller for the architecture</li>
-</ul>
-<p><img src="https://image-1257651452.cos.ap-chengdu.myqcloud.com/20181028042751.png" /></p>
-<p>There are four main architecture components in the virtualized middleware. We’ll talk below.</p>
-<h3 id="messaging-grid">Messaging Grid</h3>
-<p>When a request comes into the virtualizedmiddleware component, the messaging-grid component determines which active processing components are available to receive the request and forwards the request to one of those processing units.</p>
-<h3 id="data-grid">Data Grid</h3>
-<p>The data grid interacts with the datareplication engine in each processing unit to manage the data replication between processing units when data updates occur. Since the messaging grid can forward a request to any of the processing units available, it is essential that each processing unit contains exactly the same data in its in-memory data grid.</p>
-<h3 id="processing-grid">Processing Grid</h3>
-<p>An optional component within the virtualized middleware that manages distributed request processing when there are multiple processing units, each handling a portion of the application.</p>
-<h3 id="deployment-manager">Deployment Manager</h3>
-<p>This component continually monitors response times and user loads, and starts up new processing units when load increases, and shuts down processing units when the load decreases.</p>
-<h2 id="considerations-5">Considerations</h2>
-<p>Although the space-based architecture pattern does not require a centralized datastore, one is commonly included to perform the initial in-memory data grid load and asynchronously persist data updates made by the processing units. It is also a common practice to create separate partitions that isolate volatile and widely used transactional data from non-active data, in order to reduce the memory footprint of the in-memory data grid within each processing unit.</p>
-<h2 id="rating-5">Rating</h2>
-<ul>
-<li>Overall agility: high.  Born for it</li>
-<li>Ease of deployment: high. Born for it</li>
-<li>Testability: low, especially in the scalability aspects of the application</li>
-<li>Performance: high. Born for it</li>
-<li>Scalability: high. Born for it</li>
-<li>Ease of development: low. Sophisticated caching and in-memory data grid products make this pattern relatively complex to develop</li>
-</ul>
 ]]></content:encoded>
         </item>
     </channel>

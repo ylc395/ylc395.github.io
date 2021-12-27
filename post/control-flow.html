@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<link rel="stylesheet" href="/_assets/main.css" />
+
+    <title>控制流抽象 - cyl.moe</title>
+  </head>
+  <body>
+    <div class="main">
+      <nav class="navigation">
+        <a href="/">cyl.moe</a>
+      </nav>
+      <article>
+        <header>
+          <h1 class="article-title">控制流抽象</h1>
+          <div class="article-info">
+            <div>
+              <span
+                >Created At：<time datetime="1639485903050"
+                  >2021-12-14 20:45</time
+                ></span
+              >
+              <span
+                >Updated At：<time datetime="1640600667558"
+                  >2021-12-27 18:24</time
+                ></span
+              >
+            </div>
+            
+          </div>
+        </header>
+        <div class="article-content markdown-body"><h2 id="控制流抽象与异步时代">控制流抽象与异步时代</h2>
+<p>自结构化编程语言流行以来，编程语言仅允许程序员以<a>有限的几种方式调度控制流</a>。然而，控制流作为编程语言中的核心概念，对控制流进行抽象以更好地进行调度，是有必要的。</p>
+<h3 id="异步编程">异步编程</h3>
+<p><a title="https://www.zhihu.com/question/389262477/answer/1567044701" href="https://www.zhihu.com/question/389262477/answer/1567044701">随着互联网应用的发展</a>，应用层越来越多地使用异步调用（指调用方不等待返回值的调用。常见于 I/O 中）。其实对于软件的业务逻辑来说，本不存在“异步”的语义，<strong>程序员只是<a title="https://www.zhihu.com/question/46499998/answer/101672660" href="https://www.zhihu.com/question/46499998/answer/101672660">出于实现上的好处</a>（尤其是其对并发的支持）而不得不使用它</strong>。</p>
+<p>异步的大量使用，使得程序员们需要发明抽象来辅助进行异步编程（<a title="https://www.zhihu.com/question/23886967/answer/145214574" href="https://www.zhihu.com/question/23886967/answer/145214574">为什么？</a>）。这条路上有两个路线：</p>
+<ul>
+<li>对异步产生的值进行抽象（例如<a>Promise</a>、<a>observable</a>等）</li>
+<li><strong>对控制流本身进行抽象</strong></li>
+</ul>
+<p>这两条路线并不互斥，甚至有所重叠。本文将着重介绍第二条。</p>
+<h3 id="continuation">continuation</h3>
+<p>continuation 是一种语言级别的抽象，表示“程序的剩余部分”。参见以下两个小节：</p>
+<ul>
+<li><a>第六章：控制流#继续continuation</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/94611888">Continuation 在 JS 中的应用#continuation</a></li>
+</ul>
+<p>基于这一抽象，陆续发展出很多调度控制流的方法</p>
+<h2 id="控制流抽象">控制流抽象</h2>
+<h3 id="cps调度控制流的原始尝试">CPS：调度控制流的原始尝试</h3>
+<p>早在 70 年代，一些程序员开始使用一种称为 CPS 的编程模式来优化编译器。</p>
+<p>关于 CPS 的很好的介绍，可以参考 <a href="https://zhuanlan.zhihu.com/p/94611888">这一小节</a> 。此处仅给出结论：<strong>CPS 由于不适合人类编写和阅读，因此不是一种调度控制流的合适方法</strong>（但可以作为编译产物存在）。 但尽管如此，CPS 的幽灵仍然游荡在现代异步编程中，体现为 callback。</p>
+<p>程序员们讨厌编写 callback（当然也有<a title="https://news.ycombinator.com/item?id=1549168" href="https://news.ycombinator.com/item?id=1549168">异议</a>），因为这里存在一处矛盾：<strong>业务逻辑和程序员的思路都是线性的，而 callback 却呈碎片状散落在各处</strong>。此外，还有<a title="https://www.zhihu.com/question/32218874/answer/216801915" href="https://www.zhihu.com/question/32218874/answer/216801915">种种不便</a>。</p>
+<p>因此很自然地，程序员们需要一种更高级的语言级别的抽象——让语言来迎合人，而让解释器、编译器去处理机器的需要。</p>
+<h3 id="callcc">callcc</h3>
+<p>callcc，全称 call with current continuation，是<a title="https://www.zhihu.com/question/19585576/answer/19727369" href="https://www.zhihu.com/question/19585576/answer/19727369">功能集最小的</a>（这意味着<strong>一切关于控制流的抽象，都可以被当作是对 callcc 的某种封装</strong>）、用于调度控制流的语言抽象。相比 CPS，是一种对 continuatin 的高级应用。</p>
+<p>可以将 callcc 理解为一种基于 continuation 的<a href="https://zhuanlan.zhihu.com/p/94611888">高级版的 goto</a>（而 goto 是简单地基于源码位置的），可谓万能而危险，因而难以广泛应用（参考 goto，在结构化编程语言中，基本上是一个被封印起来的语言特性）。以下两篇文章给出了很好的示例：</p>
+<ul>
+<li><a title="https://www.zhihu.com/question/21954238/answer/1829986581" href="https://www.zhihu.com/question/21954238/answer/1829986581">如何解释 Lisp 中 call/cc 的概念？ - 叶芝秋的回答 - 知乎</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/94611888">Continuation 在 JS 中的应用#callcc</a></li>
+</ul>
+<h3 id="协程coroutine">协程（coroutine）</h3>
+<p>协程功能允许程序员（借助任意个协程，所谓的“用户态线程”）对一个控制流进行灵活的调度（这有别于线程机制，即让程序员开启数个同时活跃的控制流）。</p>
+<p>协程是这样一种语言级抽象（在大部分语言中体现为一种特殊的函数）：其可以“让出”（用某种关键字，常见的有<code>yield</code>或者<code>await</code>）控制流，之后在合适的时机可以由程序员手动（<strong>无调度器</strong>，例如 JS 中的 generator，C# / Lua 中的 coroutine）或runtime 自动（<strong>有调度器</strong>，例如 C# / JS / Python 中的 async-await，Go 中的 goroutine）恢复控制流。“除非让出执行权，否则控制流不会被打断”，便是“协”的含义。</p>
+<p>具体可见<a>第八章：子程序和控制抽象#协程</a>一节。</p>
+<p>协程对于异步调用来说用处很大：当控制流来到异步调用处时，程序员可以利用协程机制，让控制流去往其它地方（而不是停滞不前等待调用返回）；待异步调用返回后，再让控制流回到此处。</p>
+<p><strong>就主流实现而言，协程可分为两类：</strong></p>
+<h4 id="无栈协程">无栈协程</h4>
+<p>无栈（stackless）协程，顾名思义，即对于一个协程，不提供一个专门的栈空间供它记录环境，而是把<a href="https://journal.stuffwithstuff.com/2015/02/01/what-color-is-your-function/">所有信息都记录到堆里</a>。此类协程的实现很简单，可以简单到仅仅是<a href="https://journal.stuffwithstuff.com/2015/02/01/what-color-is-your-function/">编译器提供的 CPS /状态机语法糖</a>（在<a title="https://www.zhihu.com/question/305443189/answer/551716136" href="https://www.zhihu.com/question/305443189/answer/551716136"> runtime 里实现</a>当然也行）。</p>
+<p>无栈协程的一个主要缺陷是<a href="https://journal.stuffwithstuff.com/2015/02/01/what-color-is-your-function/">染色问题</a>。</p>
+<h4 id="有栈协程">有栈协程</h4>
+<p>有栈（stackful）协程，有时又叫纤程（Fiber。这个术语也<a href="https://zhuanlan.zhihu.com/p/94611888">被 React 借用了</a>），其特点是：<a href="https://journal.stuffwithstuff.com/2015/02/01/what-color-is-your-function/">每个有栈协程都有一个独立的调用栈，且有栈协程间能互相切换</a>。这是靠“将每个有栈协程都放在一个独立线程中”来实现的。</p>
+<p>对 Go 而言，这意味着使用协程（体现为 goroutine）时，可能存在着多个同时活跃的控制流；而对同为使用有栈协程的 Lua 而言，当一个协程内有控制流的时候，其余协程的控制流都处于暂停状态。</p>
+<p>关于无栈协程和有栈协程在实现上的详细对比，可见<a href="https://www.zhihu.com/question/65647171/answer/233495694">此文</a>。</p>
+<h4 id="其它">其它</h4>
+<p>此外，还有<a title="https://www.zhihu.com/question/23955356/answer/732629313" href="https://www.zhihu.com/question/23955356/answer/732629313">stack-twine、stackcopy 等方式实现的协程</a>，但由于种种负面原因，均属于非主流实现，此处不一一介绍。</p>
+<p>此外，<a title="https://www.zhihu.com/question/502314022/answer/2247370966" href="https://www.zhihu.com/question/502314022/answer/2247370966">这篇文章</a>对比了不同语言中的协程实现。</p>
+<h3 id="代数效应algebraic-effects">代数效应（Algebraic Effects）</h3>
+<p><strong>代数效应是这么一种语言特性：其相当于语言层面的依赖注入</strong>。目前只有极少的编程语言实现了这一特性。其功能是：当控制流来到值的注入点的时候，会立刻前往位于调用栈下方某处的、定义了该值的求值过程的地方。当求值完成后，控制流再返回注入点。</p>
+<blockquote>
+<p>（和协程对比）从程序运行本质上差不多。也和continuation passing style差不多。都是把当前运行环境中下一步要执行的代码(current continuation)，给保存起来，让外部传入东西继续执行。</p>
+<p>再说区别，一般而言coroutine是one-shot的。比如generaor函数运行了next以后，就再也回不去了</p>
+<p>而algebraic effect更灵活，是可以多次重入的。</p>
+<p><a title="https://www.zhihu.com/question/506309867/answer/2273058569" href="https://www.zhihu.com/question/506309867/answer/2273058569">https://www.zhihu.com/question/506309867/answer/2273058569</a></p>
+</blockquote>
+</div>
+      </article>
+    </div>
+  </body>
+</html>
